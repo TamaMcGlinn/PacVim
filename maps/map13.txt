@@ -1,0 +1,38 @@
+#############################################################################                          ###############
+#     He wondered,~as he had many times wondered before, whether he himself #            ###     ##   # It was a blow~#
+# was a lunatic.  ~   ##################### ############# ###################     ###    ###     ###  #struck against~#
+# #~~~~~~~~~~~~~~~~#  #   Perhaps a lunatic was~simply a minority~of one.   #     ###     #      ###  #the Party.~###
+# #Every record has#  #~~~~~~~~~~~~~~~~~~~~~~~~~#every book #################      #      #       #   ##  ~#######
+# # been destroyed #   He unrolled~and~read~it~~# has been rewritten, #     #      #              #     # ~#
+# #or falsified    #  #without~pausing~in~his~~~#every~~~~~~~~picture # #   #                           # ~#
+# #~~~~~~~ ~~~~~~~~#  #speech.~Nothing~altered~~####### repainted###### # ##############################   ~#
+# #they~had~#####~#####in~his~voice~or~manner,~or~in~~##########      # # #It was a political act.          ~########
+#   ~never  #   #~#   #the~content~of~what~he~was~saying,# History    # # # #'Do you remember,' he said, 'the thrush~##
+#~# mastered#   #~#   #but suddenly #######################  has      # #   # that sang to us, that first day, at  ~#
+#~# the     #####~#####    the names~were different.Without#  stopped.# #####the edge of the wood?'~################
+#~# secret~of~finding~out~what~     #words said, a wave of  ####      #    ~########################      ~  
+### ~~~~~~~~~~~~~~~~~~~~~~~another  #understanding rippled through######## ~# 'You're only a rebel~       ~  
+#~  Nothing exists except ~was      #the crowd. Oceania was at war with    ~#   from the waist downwards,'~  
+#~  an endless~present in ~ thinking############################## Eastasia!#   ###   ###       ###       ~  
+#~  which the~Party is    #The banners~and posters with which the ~~~~~~~~~~#   ###   ###       ###       ~  
+#~  always right.~        #square was~decorated were all wrong! The agents ~#    #     #        ##        ~  
+#~                        #of~Goldstein~had been at work! ###################    #     #         #        ~  
+###########################################################                  ##########################################
+/.6 22 1
+/.6 18 2
+/.7 40 3
+/.4 60 3
+/.5 55 4
+/.6 24 5
+/.5 19 6
+/.6 27 8
+/2 13 9
+/2 19 9
+/.4 8 10
+/.6 23 12
+/.6 18 14
+/.8 40 14
+/.7 42 15
+/.8 30 16
+/.7 52 17
+p1 1
