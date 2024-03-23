@@ -119,6 +119,8 @@ have less than 0 lives, you lose the entire game.
 | 0   | jump to the beginning of the line |
 | fx  | jump forward to character x (cannot cross walls) |
 | Fx  | jump backward to character x (cannot cross walls) |
+| tx  | jump forward to before character x (cannot cross walls) |
+| Fx  | jump backward to before character x (cannot cross walls) |
 | gg/1G | jump to the beginning of the first line |
 | *number*G | jump to the beginning of the line given by *number* |
 | G   | jump to the beginning of the last line |
