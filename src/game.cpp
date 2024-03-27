@@ -262,7 +262,11 @@ void onKeystroke(avatar& unit, char key) {
 void levelMessage() {
 	// find appropriate message
 	stringstream ss;
-	ss << "LEVEL " << CURRENT_LEVEL;
+	if (IN_TUTORIAL){
+	  ss << "TUTORIAL";
+	} else {
+	  ss << "LEVEL " << CURRENT_LEVEL;
+	}
 	string msg = ss.str();
 
 	// print + pause
@@ -642,6 +646,15 @@ int main(int argc, char** argv)
 		// program called with invalid arguments
 		return 0;
 	}
+
+  while(GAME_WON != 1) {
+    // tutorial
+		GAME_WON = 0;
+    init(MAPS_LOCATION "/tutorial.txt");
+		TOTAL_POINTS = 0; // don't keep points from tutorial
+  }
+	GAME_WON = 0;
+  IN_TUTORIAL = false;
 
 	while(LIVES >= 0) {
 		string mapName = MAPS_LOCATION "/map";

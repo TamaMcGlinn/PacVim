@@ -1,0 +1,29 @@
+#####################################################################
+# ________  ________  ________  ___      ___ ___  _____ ______      #
+# |\   __  \|\   __  \|\   ____\|\  \    /  /|\  \|\   _ \  _   \   #
+# \ \  \|\  \ \  \|\  \ \  \___|\ \  \  /  / | \  \ \  \\\__\ \  \  #
+# \ \   ____\ \   __  \ \  \    \ \  \/  / / \ \  \ \  \\|__| \  \  #
+#  \ \  \___|\ \  \ \  \ \  \____\ \    / /   \ \  \ \  \    \ \  \ #
+#   \ \__\    \ \__\ \__\ \_______\ \__/ /     \ \__\ \__\    \ \__\#
+#    \|__|     \|__|\|__|\|_______|\|__|/       \|__|\|__|     \|__|#
+#            press & to skip the tutorial                           #
+#        ####################      ########################         #
+#  ** To move the cursor, press the h,j,k,l keys as indicated. **############
+#     ^       #                                              #####          #
+#     k       #  The h key is at the left and moves left.##### Avoid these: #
+# < h   l >   #  The l key is at the right and moves right.                 #
+#     j       #  The j key looks like a down arrow.                         #
+#     v   f t F T can jump over enemies but not walls#########don'ttouchthem#
+#           every character must be made green to proceed    ###theredthings#
+#     Use b and e to quickly scan through words, or B and E    #####killyou!#
+#     to include all non-whitespace characters;but watch out for~! ########################
+#0 and ^ - are they the same?      aaaaaaaaaaaaand...what about$?  # $0^ can cross walls  #
+########################################################################## enemies cannot #
+#  try 21G        #          #                                           ##################
+#  or 22G or gg to jump back #
+#~ but NOT 23G orG############
+###################
+/1 65 14
+/1.2 70 14
+/1.4 75 14
+p1 11

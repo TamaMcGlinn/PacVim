@@ -34,5 +34,6 @@ int TOP = 0;
 int BOTTOM = 0;
 int WIDTH = 0;
 int CURRENT_LEVEL = 0;
+bool IN_TUTORIAL = true;
 
 std::mutex mtx;

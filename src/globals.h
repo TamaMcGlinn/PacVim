@@ -38,6 +38,7 @@ extern int GAME_WON; // 0 = in progress, 1 = won, -1 = lose
 extern int FREEZE_GHOSTS; // 0 = moving, 1 = frozen
 extern std::string INPUT; // keyboard characters
 extern int CURRENT_LEVEL;
+extern bool IN_TUTORIAL;
 extern int LIVES;
 extern const int NUM_OF_LEVELS;
 

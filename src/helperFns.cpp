@@ -128,11 +128,15 @@ void winGame() {
 	clear();
 	writeError("YOU WIN");
 
-	if((CURRENT_LEVEL % 3) == 0) {
-		printAtBottom("YOU WIN THE GAME!\nGAIN A LIFE!");
-	}
-	else {
-		printAtBottom("YOU WIN THE GAME!");
+  if (IN_TUTORIAL) {
+	  printAtBottom("Now you know the basics, let's begin...");
+	} else {
+	  if((CURRENT_LEVEL % 3) == 0) {
+		  printAtBottom("YOU WIN THE GAME!\nGAIN A LIFE!");
+	  }
+	  else {
+		  printAtBottom("YOU WIN THE GAME!");
+	  }
 	}
 
 	refresh();
@@ -144,12 +148,16 @@ void winGame() {
 void loseGame() {
 	clear();
 	writeError("YOU LOSE");
-	printAtBottom("YOU LOSE THE GAME!\nLOST 1 LIFE");
+	if (IN_TUTORIAL) {
+	  printAtBottom("Hint: jump away quickly with gg or 10G");
+	} else {
+	  printAtBottom("YOU LOSE THE GAME!\nLOST 1 LIFE");
+	  LIVES--;
+	}
 	refresh();
 	GAME_WON = -1;
 	READY = false;
 
-	LIVES--;
 	sleep(1);
 }
 
