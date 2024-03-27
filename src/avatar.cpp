@@ -308,10 +308,51 @@ bool avatar::parseToBeginning() {
 	return true;
 }
 
-bool avatar::jumpToChar(char targetChar, bool forward, bool includingTarget) {
+bool avatar::percentJump() {
+  std::string letter = std::string(1, letterUnder);
+  char opposite = 'x'; bool forward = true;
+  if(letter == "(") {
+	  opposite = ')';
+  }
+  else if(letter == "{") {
+	  opposite = '}';
+  }
+  else if(letter == "[") {
+	  opposite = ']';
+  }
+  else if(letter == ")") {
+	  opposite = '(';
+	  forward = false;
+  }
+  else if(letter == "}") {
+	  opposite = '{';
+	  forward = false;
+  }
+  else if(letter == "]") {
+	  opposite = '[';
+	  forward = false;
+  }
+  if (opposite == 'x') {
+    writeError("Percentjump on non bracket char");
+    return false;
+  }
+  int offset = forward ? 1 : -1;
+  for(int target_y = y; target_y >= 0 && target_y < HEIGHT; target_y += offset) {
+    int start_x = target_y == y ? x + offset : (forward ? 0 : WIDTH - 1);
+    for(int target_x = start_x; target_x >= 0 && target_x < WIDTH; target_x += offset) {
+      chtype letter = letterAt(target_x,target_y);
+      if(letter == opposite){
+        return moveTo(target_x,target_y);
+      }
+    }
+  }
+  return false;
+}
+
+bool avatar::jumpToChar(char targetChar, bool forward, bool includingTarget, bool acrossWalls) {
   int offset = forward ? 1 : -1;
   for(int target_x = x + offset; target_x >= 0 && target_x < WIDTH; target_x += offset) {
-    if (charAt(target_x, y) > 4000000) {
+    if (!acrossWalls && charAt(target_x, y) > 4000000) {
       return false;
     }
     chtype letter = letterAt(target_x,y);
@@ -325,11 +366,11 @@ bool avatar::jumpToChar(char targetChar, bool forward, bool includingTarget) {
   return false;
 }
 
-bool avatar::jumpForward(char targetChar, bool includingTarget) {
-  return jumpToChar(targetChar, true, includingTarget);
+bool avatar::jumpForward(char targetChar, bool includingTarget, bool acrossWalls) {
+  return jumpToChar(targetChar, true, includingTarget, acrossWalls);
 }
 
-bool avatar::jumpBackward(char targetChar, bool includingTarget) {
-  return jumpToChar(targetChar, false, includingTarget);
+bool avatar::jumpBackward(char targetChar, bool includingTarget, bool acrossWalls) {
+  return jumpToChar(targetChar, false, includingTarget, acrossWalls);
 }
 

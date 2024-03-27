@@ -9,10 +9,10 @@
 #            press & to skip the tutorial                           #
 #        ####################      ########################         #
 #  ** To move the cursor, press the h,j,k,l keys as indicated. **############
-#     ^       #                                              #####          #
+#     ^       #  { ( % jumps between these ) [ and even over ##### walls  } #
 #     k       #  The h key is at the left and moves left.##### Avoid these: #
 # < h   l >   #  The l key is at the right and moves right.                 #
-#     j       #  The j key looks like a down arrow.                         #
+#     j       #  The j key looks like a down arrow.                       ] #
 #     v   f t F T can jump over enemies but not walls#########don'ttouchthem#
 #           every character must be made green to proceed    ###theredthings#
 #     Use b and e to quickly scan through words, or B and E    #####killyou!#

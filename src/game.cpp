@@ -108,21 +108,20 @@ void doKeystroke(avatar& unit) {
 	else if(INPUT == "0") {
 		unit.parseToBeginning();
 	}
+	else if(INPUT == "%") {
+	  unit.percentJump();
+	}
 	else if(INPUT.size() == 2 && (INPUT[0] == 'f')){
-	  unit.jumpForward(INPUT[1], true);
-	  INPUT="";
+	  unit.jumpForward(INPUT[1], true, false);
 	}
 	else if(INPUT.size() == 2 && (INPUT[0] == 'F')){
-	  unit.jumpBackward(INPUT[1], true);
-	  INPUT="";
+	  unit.jumpBackward(INPUT[1], true, false);
 	}
 	else if(INPUT.size() == 2 && (INPUT[0] == 't')){
-	  unit.jumpForward(INPUT[1], false);
-	  INPUT="";
+	  unit.jumpForward(INPUT[1], false, false);
 	}
 	else if(INPUT.size() == 2 && (INPUT[0] == 'T')){
-	  unit.jumpBackward(INPUT[1], false);
-	  INPUT="";
+	  unit.jumpBackward(INPUT[1], false, false);
 	}
 	else if(INPUT == "gg" || INPUT == "1G") {
 		int i = 0;
@@ -248,8 +247,8 @@ void onKeystroke(avatar& unit, char key) {
 			INPUT = "";
 		}
 		// do keystroke if the first character is a letter,
-		//  except 0 (which immediately moves the player)
-		if(INPUT == "0" || (!isFullDigits(INPUT) && INPUT != "f" && INPUT != "F" && INPUT != "t" && INPUT != "T")) {
+		//  or 0 or % (which also immediately moves the player)
+		if(INPUT == "0" || INPUT == "%" || (!isFullDigits(INPUT) && INPUT != "f" && INPUT != "F" && INPUT != "t" && INPUT != "T")) {
 			doKeystroke(unit);
 			INPUT = "";
 		}

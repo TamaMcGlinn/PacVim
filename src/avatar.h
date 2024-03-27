@@ -52,10 +52,11 @@ class avatar {
 		bool parseWordBackward(bool);
 		bool parseWordEnd(bool);
 		bool parseToBeginning();
+	  bool percentJump();
 		bool parseToEnd();
-		bool jumpToChar(char, bool, bool);
-		bool jumpForward(char, bool);
-		bool jumpBackward(char, bool);
+		bool jumpToChar(char, bool, bool, bool);
+		bool jumpForward(char, bool, bool);
+		bool jumpBackward(char, bool, bool);
 
 		int getPoints();
 		bool getPlayer();
