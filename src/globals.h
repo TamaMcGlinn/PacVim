@@ -32,6 +32,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <set>
 #include <mutex>
+#include "reachableMap.h"
+
 //#include <cursesw.h>
 extern int TOTAL_POINTS;
 extern int GAME_WON; // 0 = in progress, 1 = won, -1 = lose
@@ -39,17 +41,17 @@ extern int FREEZE_GHOSTS; // 0 = moving, 1 = frozen
 extern std::string INPUT; // keyboard characters
 extern int CURRENT_LEVEL;
 extern bool IN_TUTORIAL;
+extern ReachableMap reachability_map;
 extern int LIVES;
 extern const int NUM_OF_LEVELS;
 
 extern bool READY;
 extern double THINK_MULTIPLIER; // all the think times for the AI are multipled by this
 
-
-extern int TOP;
-extern int BOTTOM;
+extern int MAP_BEGIN; // the first row in which a play can move in (near the *top* of the map file!)
+extern int MAP_END;   // the last row with any character on it at all (not necessarily inside the map)
 extern int WIDTH;
-#define HEIGHT (TOP - BOTTOM)
+#define HEIGHT (MAP_END - MAP_BEGIN)
 
 extern std::mutex mtx;
 #endif

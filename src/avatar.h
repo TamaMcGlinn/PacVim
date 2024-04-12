@@ -51,9 +51,9 @@ class avatar {
 		bool parseWordForward(bool);
 		bool parseWordBackward(bool);
 		bool parseWordEnd(bool);
-		bool parseToBeginning();
+		bool jumpToBeginning();
+		bool jumpToEnd();
 	  bool percentJump();
-		bool parseToEnd();
 		bool jumpToChar(char, bool, bool, bool);
 		bool jumpForward(char, bool, bool);
 		bool jumpBackward(char, bool, bool);

@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "globals.h"
+#include "reachableMap.h"
 #include <string>
 
 int TOTAL_POINTS = 0;
@@ -30,10 +31,12 @@ const int NUM_OF_LEVELS = 10;
 
 double THINK_MULTIPLIER = 1.0;
 
-int TOP = 0;
-int BOTTOM = 0;
+int MAP_BEGIN = 0;
+int MAP_END = 0;
 int WIDTH = 0;
 int CURRENT_LEVEL = 0;
 bool IN_TUTORIAL = true;
+
+ReachableMap reachability_map;
 
 std::mutex mtx;

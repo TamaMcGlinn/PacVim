@@ -19,6 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "avatar.h"
 #include <sstream>
 
+#include "globals.h"
+
 avatar::avatar() {
 	x = 1;
 	y = 1;
@@ -278,34 +280,22 @@ bool avatar::parseWordForward(bool isWord) {
 	return true;
 }
 
-bool avatar::parseToEnd() {
-	// go to end of line, then move back until hash tag (wall)
-	// after that, move left once more so you are inside the board
-
-	x = WIDTH;
-	while(isValid(x, y)) {
-		x--;
-		writeError("shiet");
-	}
-	while(!isValid(x, y)) {
-		x--;
-		if(x > WIDTH || x <= 1 || y<= 1 || y > HEIGHT)
-			break;
-	}
-	moveTo(x, y);
-	return true;
+bool avatar::jumpToEnd() {
+  int x = reachability_map.last_reachable_index_on_line(y);
+  if (x != -1) {
+    moveTo(x, y);
+	  return true;
+  }
+  return false;
 }
 
-bool avatar::parseToBeginning() { 
-	x = 0;
-	while(isValid(x, y) && x <= WIDTH)  {
-		 x++; 
+bool avatar::jumpToBeginning() { 
+  int x = reachability_map.first_reachable_index_on_line(y);
+	if (x != -1) {
+	  moveTo(x,y);
+	  return true;
 	}
-	while(!isValid(x, y) && x <= WIDTH) {
-		 x++;
-	 }
-	moveTo(x, y);
-	return true;
+	return false;
 }
 
 bool avatar::percentJump() {

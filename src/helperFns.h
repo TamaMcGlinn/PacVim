@@ -49,8 +49,7 @@ void printAtBottom(std::string msg);
 void winGame();
 void loseGame();
 
-// 
-bool isInside(int x, int y, std::string direction);
+// note isInside has been replaced with a more robust method, see reachableMap.h
 
 bool isWall(chtype character);
 // check to see if the player can move there

@@ -106,14 +106,14 @@ void printAtBottomChar(char msg) {
 	//mtx.lock();
 	std::string x;
 	x += msg;
-	mvprintw(TOP+5, 0, "%s", (x).c_str());
+	mvprintw(MAP_END+5, 0, "%s", (x).c_str());
 	//mtx.unlock();
 }
 void printAtBottom(std::string msg) {
 	//mtx.lock();
 	int x, y;
 	getyx(stdscr, y, x);
-	mvprintw(TOP+1, 1, "%s", msg.c_str());
+	mvprintw(MAP_END+1, 1, "%s", msg.c_str());
 	mvinch(y,x);
 	move(y,x);
 
@@ -188,46 +188,3 @@ bool isValid(int x, int y) {
 	}
 	return true;	
 }
-
-// recursive
-bool isInside(int x, int y, std::string direction = "omni") {
-	// we can tell if a location is bounded by the the walls
-	// if we can look up, right, left, down and find a wall before
-	// hitting the edge of the screen (eg: the far top or far
-	// left of the console) and before the width value is exceeded
-
-	// out of screen or bounds -- return false
-	if(x <  0 || y < 0 || x > WIDTH || y > HEIGHT) {
-		return false;
-	}
-	chtype value = charAt(x, y);
-
-	// found a wall
-	if(value >= 4000000) { 
-		return direction != "omni"; // can't call isInside(x,y, omni) on a wall
-	}
-
- 	// no wall found -- continue searching in the proper direction
-	if(direction == "left") { 
-		return isInside(x-1, y, "left");
-	}
-	else if(direction == "right") {
-		return isInside(x+1, y, "right");
-	}
-	else if(direction == "up") {
-		return isInside(x, y-1, "up"); 
-	}
-	else if(direction == "down") {
-		return isInside(x, y+1, "down");
-	}
-	else {
-		return isInside(x+1, y, "right") && isInside(x-1, y, "left") &&
-			isInside(x, y-1, "up") && isInside(x, y+1, "down");
-	}
-}
-
-	
-
-
-
-	

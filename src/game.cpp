@@ -65,7 +65,31 @@ bool isFullDigits(string &str) {
 	return true;
 }
 
-
+void jumpToFirstReachableLine(avatar & unit, int lineNumber, bool searchForwards) {
+  lineNumber = max(0, min(lineNumber, MAP_END - MAP_BEGIN));
+  int offset_from_start = lineNumber - 1;
+  int real_line_number = MAP_BEGIN + offset_from_start;
+  int x_start_of_line = reachability_map.first_reachable_index_on_line(real_line_number);
+  std::stringstream ss2;
+  ss2 << "MAPBEGIN=" << MAP_BEGIN << ", line " << lineNumber << ", really " << real_line_number << " starts at char " << x_start_of_line;
+  writeError(ss2.str());
+  while(real_line_number >= MAP_BEGIN && real_line_number <= MAP_END && x_start_of_line == -1) {
+    std::stringstream ss;
+    ss << "line " << real_line_number << " is not reachable, searching " << (searchForwards ? "forwards" : "backwards");
+    writeError(ss.str());
+    if (searchForwards) {
+	    ++real_line_number;
+	  } else {
+	    --real_line_number;
+	  }
+    x_start_of_line = reachability_map.first_reachable_index_on_line(real_line_number);
+  }
+  if (x_start_of_line != -1) {
+	  unit.moveTo(x_start_of_line, real_line_number);
+  } else {
+    writeError("Went out of bounds trying to find line to jump to !");
+  }
+}
 
 void doKeystroke(avatar& unit) {
 	if(INPUT== "q") { 
@@ -103,10 +127,10 @@ void doKeystroke(avatar& unit) {
 		unit.parseWordEnd(true);
 	}
 	else if(INPUT == "$") { 
-		unit.parseToEnd(); 
+		unit.jumpToEnd(); 
 	}
 	else if(INPUT == "0") {
-		unit.parseToBeginning();
+		unit.jumpToBeginning();
 	}
 	else if(INPUT == "%") {
 	  unit.percentJump();
@@ -124,29 +148,15 @@ void doKeystroke(avatar& unit) {
 	  unit.jumpBackward(INPUT[1], false, false);
 	}
 	else if(INPUT == "gg" || INPUT == "1G") {
-		int i = 0;
-		while(!isInside(unit.getX(), BOTTOM+i, "omni")) {
-			i++;
-			unit.setPos(0, BOTTOM+i);
-			unit.parseToBeginning();
-		}
-		unit.setPos(unit.getX(), BOTTOM+i); 
-		unit.parseToBeginning();
+	  jumpToFirstReachableLine(unit, 1, true);
+	  INPUT="";
 	}
 	else if(INPUT == "G") { 
-		int i = 0;
-		while(!isInside(unit.getX(), TOP-i, "omni")) {
-			i++;
-			unit.setPos(unit.getX(), TOP-i);
-			unit.parseToBeginning();
-		}
-		// move to the first word on the current line
-		INPUT = "^";
-		doKeystroke(unit);
+	  jumpToFirstReachableLine(unit, MAP_END - MAP_BEGIN, false);
 	}
 	else if(INPUT == "^") {
 		// goes to first character after blank
-		unit.parseToBeginning();
+		unit.jumpToBeginning();
 
 		char currentChar = charAt(unit.getX(), unit.getY());
 		if (currentChar == ' ') {
@@ -205,25 +215,11 @@ void onKeystroke(avatar& unit, char key) {
 		
 		// special ... #G. Move to the line number #
 		if(key == 'G') {
-			// go to line num
-			if(num == 1) {
-				INPUT = "1G";
-				doKeystroke(unit);
-			}
-			// don't go to a line that is offscreen or off the map
-			else if(num > TOP) {
-				INPUT = "G";
-				doKeystroke(unit);
-			}
-			else {
-				// change line number
-				unit.setPos(unit.getX(), num);
-				INPUT = "";
-				
-				// then go to the first character
-				mtx.unlock();
-				onKeystroke(unit, '^');
-			}
+			INPUT = "";
+			std::stringstream ss3;
+			ss3 << "Num " << num;
+			writeError(ss3.str());
+	    jumpToFirstReachableLine(unit, num, false);
 			refresh();
 			mtx.unlock();
 			return;
@@ -291,14 +287,22 @@ void drawScreen(const char* file) {
 	// clear ghostList because we are gonna obtain new ones
 	ghostList.clear();
 
+	// clear reachability map
+	reachability_map.clear();
+
 	vector<vector <chtype> > board;
 	vector<string> boardStr;
 	string str;
 	vector<chtype> line;
 
+  writeError("LOADING MAP:");
 	// store lines from text file into 'board' and 'boardStr'
 	WIDTH = 0; // largest width in the map
 	while(getline(in, str)) {
+	  if (str.empty() || (str[0] != 'p' && str[0] != '/')) {
+	    reachability_map.addLine(str);
+	  }
+    writeError(str);
 		for(unsigned i = 0; i < str.length(); i++) {
 			line.push_back(str[i]);
 		}
@@ -309,6 +313,7 @@ void drawScreen(const char* file) {
 		if (WIDTH < str.length())
 			WIDTH = str.length();
 	}
+	writeError("Done loading map");
 	
 	// add spaces automatically to lines that don't have
 	// the max length (specified by WIDTH). Errors will
@@ -348,11 +353,10 @@ void drawScreen(const char* file) {
 			ghost.yPos = stoi(c, nullptr, 0);
 			ghostList.push_back(ghost);
 			continue;
-		}
+		} else if(boardStr.at(i).at(0) == 'p') {
 		// this is where the player starting position is handled 
-	    else if(boardStr.at(i).at(0) == 'p') {
 			string str = boardStr.at(i);
-		    str.erase(str.begin(), str.begin()+1); 
+			str.erase(str.begin(), str.begin()+1); 
 
 			// get x position
 			string x = str.substr(0, str.find(" "));
@@ -439,34 +443,23 @@ void drawScreen(const char* file) {
 					attron(COLOR_PAIR(6));
 				}
 				addch(*ch);
+				// uncomment this instead of the above line to show reachability map:
+				// if (reachability_map.reachable(j, i)) {
+				//   addch('.');
+				// } else {
+				//   addch('x');
+				// }
 				attroff(COLOR_PAIR(6));
 			}
 		}
-		// set value of BOTTOM - which is the first row
+		// set value of MAP_BEGIN - which is the first row
 		//	in which a player can move in
-		int size = board.at(i).size();
-		if(i != 0 && BOTTOM == 0) {	
-			bool INSIDE = false;
-			char lastChar;
-			for(int j = 0; j < size; j++) { 
-				if(board.at(i).at(j) == '#') {
-					if(lastChar != '#')
-						INSIDE = !INSIDE; // true -> false, false -> true
-				}
-				else {
-					BOTTOM = i;
-					break;
-				}
-				INSIDE = false;
-				lastChar = board.at(i).at(j);
-			}
+		if (MAP_BEGIN == 0 && reachability_map.first_reachable_index_on_line(i) != -1) {
+		  MAP_BEGIN = i;
 		}
-		TOP++;
-		writeError("TOP is set");	
+		MAP_END++;
 		addch('\n');
 	}
-
-	
 	// if the 'p' in a file is not found, that means no player starting
 	// position was specified, and therefore we set the default here:
 	START_X = WIDTH/2;
@@ -544,10 +537,15 @@ void playGame(time_t lastTime, avatar &player) {
 void init(const char* mapName) {
 	// set up map
 	clear();
-	TOP = 0;
-	BOTTOM = 0;
+	MAP_END = 0;
+	MAP_BEGIN = 0;
 	WIDTH = 0;
 	drawScreen(mapName);
+
+  std::stringstream ss;
+  ss << "Map starts on line " << MAP_BEGIN << " and ends on line " << MAP_END;
+  writeError(ss.str());
+	
 
 	// create player
 	avatar player (START_X, START_Y, true);

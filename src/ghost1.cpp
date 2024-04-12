@@ -75,16 +75,16 @@ void Ghost1::spawnGhost(bool spawned = false) {
 
 	mtx.unlock();
 	usleep(250000); // wait a quarter second
-	writeError("TRYING TO SPAWN");
+	// writeError("TRYING TO SPAWN");
 
 	if(!READY) {
-		writeError("UNREADY!");
+		// writeError("UNREADY!");
 		spawnGhost(true);
 		return;
 	}
 
 	// Player is ready. Start thinking
-	writeError("SHOULD HAVE SPAWNED");
+	// writeError("SHOULD HAVE SPAWNED");
 	think();
 }
 
