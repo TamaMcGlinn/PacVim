@@ -147,12 +147,17 @@ void doKeystroke(avatar& unit) {
 	else if(INPUT.size() == 2 && (INPUT[0] == 'T')){
 	  unit.jumpBackward(INPUT[1], false, false);
 	}
-	else if(INPUT == "gg" || INPUT == "1G") {
+	else if(INPUT == "gg" || INPUT == "1G" || INPUT == "H") {
 	  jumpToFirstReachableLine(unit, 1, true);
 	  INPUT="";
 	}
-	else if(INPUT == "G") { 
+	else if(INPUT == "G" || INPUT == "L") { 
 	  jumpToFirstReachableLine(unit, MAP_END - MAP_BEGIN, false);
+	  INPUT="";
+	}
+	else if(INPUT == "M") { 
+	  jumpToFirstReachableLine(unit, MAP_BEGIN + (MAP_END - MAP_BEGIN) / 2, true);
+	  INPUT="";
 	}
 	else if(INPUT == "^") {
 		// goes to first character after blank
