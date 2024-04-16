@@ -27,7 +27,7 @@ int FREEZE_GHOSTS = 0;
 std::string INPUT = "";
 bool READY = false;
 int LIVES = 3;
-const int NUM_OF_LEVELS = 11;
+const int NUM_OF_LEVELS = 12;
 
 double THINK_MULTIPLIER = 1.0;
 
