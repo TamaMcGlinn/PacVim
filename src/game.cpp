@@ -137,15 +137,43 @@ void doKeystroke(avatar& unit) {
 	}
 	else if(INPUT.size() == 2 && (INPUT[0] == 'f')){
 	  unit.jumpForward(INPUT[1], true, false);
+    lastJumpWasForwards = true;
+    lastJumpIncludedTarget = true;
+    lastJumpChar = INPUT[1];
 	}
 	else if(INPUT.size() == 2 && (INPUT[0] == 'F')){
 	  unit.jumpBackward(INPUT[1], true, false);
+    lastJumpWasForwards = false;
+    lastJumpIncludedTarget = true;
+    lastJumpChar = INPUT[1];
 	}
 	else if(INPUT.size() == 2 && (INPUT[0] == 't')){
 	  unit.jumpForward(INPUT[1], false, false);
+    lastJumpWasForwards = true;
+    lastJumpIncludedTarget = false;
+    lastJumpChar = INPUT[1];
 	}
 	else if(INPUT.size() == 2 && (INPUT[0] == 'T')){
 	  unit.jumpBackward(INPUT[1], false, false);
+    lastJumpWasForwards = false;
+    lastJumpIncludedTarget = false;
+    lastJumpChar = INPUT[1];
+	}
+	else if(INPUT == ";") {
+	  if (lastJumpChar == '\0') {
+	    INPUT = "";
+	    return;
+	  }
+    // jumpToChar(char targetChar, bool forward, bool includingTarget, bool acrossWalls) {
+		unit.jumpToChar(lastJumpChar, lastJumpWasForwards, lastJumpIncludedTarget, false);
+	}
+	else if(INPUT == ",") {
+	  if (lastJumpChar == '\0') {
+	    INPUT = "";
+	    return;
+	  }
+    // jumpToChar(char targetChar, bool forward, bool includingTarget, bool acrossWalls) {
+		unit.jumpToChar(lastJumpChar, !lastJumpWasForwards, lastJumpIncludedTarget, false);
 	}
 	else if(INPUT == "gg" || INPUT == "1G" || INPUT == "H") {
 	  jumpToFirstReachableLine(unit, 1, true);
@@ -248,8 +276,8 @@ void onKeystroke(avatar& unit, char key) {
 			INPUT = "";
 		}
 		// do keystroke if the first character is a letter,
-		//  or 0 or % (which also immediately moves the player)
-		if(INPUT == "0" || INPUT == "%" || (!isFullDigits(INPUT) && INPUT != "f" && INPUT != "F" && INPUT != "t" && INPUT != "T")) {
+		//  or 0 or % or ; or , (which also immediately moves the player)
+		if(INPUT == ";" || INPUT == "," || INPUT == "0" || INPUT == "%" || (!isFullDigits(INPUT) && INPUT != "f" && INPUT != "F" && INPUT != "t" && INPUT != "T")) {
 			doKeystroke(unit);
 			INPUT = "";
 		}
@@ -545,6 +573,9 @@ void init(const char* mapName) {
 	MAP_END = 0;
 	MAP_BEGIN = 0;
 	WIDTH = 0;
+  lastJumpWasForwards = true;
+  lastJumpIncludedTarget = true;
+  lastJumpChar = '\0';
 	drawScreen(mapName);
 
   std::stringstream ss;

@@ -53,6 +53,10 @@ extern int MAP_END;   // the last row with any character on it at all (not neces
 extern int WIDTH;
 #define HEIGHT (MAP_END - MAP_BEGIN)
 
+extern bool lastJumpWasForwards;
+extern bool lastJumpIncludedTarget;
+extern char lastJumpChar;
+
 extern std::mutex mtx;
 #endif
 

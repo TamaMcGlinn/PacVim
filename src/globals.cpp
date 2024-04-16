@@ -37,6 +37,10 @@ int WIDTH = 0;
 int CURRENT_LEVEL = 0;
 bool IN_TUTORIAL = true;
 
+bool lastJumpWasForwards;
+bool lastJumpIncludedTarget;
+char lastJumpChar = '\0';
+
 ReachableMap reachability_map;
 
 std::mutex mtx;
