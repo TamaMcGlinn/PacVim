@@ -299,36 +299,43 @@ bool avatar::jumpToBeginning() {
 }
 
 bool avatar::percentJump() {
-  std::string letter = std::string(1, letterUnder);
+  int source_x = x;
+  chtype letter;
   char opposite = 'x'; bool forward = true;
-  if(letter == "(") {
-	  opposite = ')';
-  }
-  else if(letter == "{") {
-	  opposite = '}';
-  }
-  else if(letter == "[") {
-	  opposite = ']';
-  }
-  else if(letter == ")") {
-	  opposite = '(';
-	  forward = false;
-  }
-  else if(letter == "}") {
-	  opposite = '{';
-	  forward = false;
-  }
-  else if(letter == "]") {
-	  opposite = '[';
-	  forward = false;
+  while (opposite == 'x' && source_x < WIDTH) {
+    letter = letterAt(source_x,y);
+    if(letter == '(') {
+	    opposite = ')';
+    }
+    else if(letter == '{') {
+	    opposite = '}';
+    }
+    else if(letter == '[') {
+	    opposite = ']';
+    }
+    else if(letter == ')') {
+	    opposite = '(';
+	    forward = false;
+    }
+    else if(letter == '}') {
+	    opposite = '{';
+	    forward = false;
+    }
+    else if(letter == ']') {
+	    opposite = '[';
+	    forward = false;
+    }
+    if (opposite == 'x') {
+      source_x += 1;
+    }
   }
   if (opposite == 'x') {
-    writeError("Percentjump on non bracket char");
+    // no bracket char found
     return false;
   }
   int offset = forward ? 1 : -1;
   for(int target_y = y; target_y >= 0 && target_y < HEIGHT; target_y += offset) {
-    int start_x = target_y == y ? x + offset : (forward ? 0 : WIDTH - 1);
+    int start_x = target_y == y ? source_x + offset : (forward ? 0 : WIDTH - 1);
     for(int target_x = start_x; target_x >= 0 && target_x < WIDTH; target_x += offset) {
       chtype letter = letterAt(target_x,target_y);
       if(letter == opposite){
