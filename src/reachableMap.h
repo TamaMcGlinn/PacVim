@@ -255,7 +255,7 @@ public:
     }
     for (int section_index = 0; section_index < l.sections.size(); ++section_index) {
       if (l.sections[section_index].isInside) {
-        return l.sections[section_index].x_start;
+        return l.sections[section_index].x_start + 2;
       }
     }
     return -1;
@@ -271,7 +271,7 @@ public:
     }
     for (int section_index = l.sections.size() - 1; section_index >= 0; --section_index) {
       if (l.sections[section_index].isInside) {
-        return l.sections[section_index].x_end;
+        return l.sections[section_index].x_end + 2;
       }
     }
     return -1;

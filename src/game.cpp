@@ -41,7 +41,7 @@ vector<ghostInfo> ghostList;
 
 
 void gotoLineBeginning(int line, avatar &unit) {
-	int x = 0;
+	int x = 2;
 	while(mvinch(x, line) == '#' ) {
 		x++;
 	}
@@ -352,7 +352,7 @@ void drawScreen(const char* file) {
 	// the max length (specified by WIDTH). Errors will
 	// happen if the board does not have a constant length
 	for(unsigned i = 0; i < board.size(); i++) {
-		boardStr.at(i).resize(WIDTH, ' '); 
+		boardStr.at(i).resize(WIDTH, 0x00A0); 
 		for(unsigned j = board.at(i).size(); j < WIDTH; j++) { 
 			chtype empty = ' ';
 			board.at(i).push_back(empty);
@@ -382,7 +382,7 @@ void drawScreen(const char* file) {
 			// create the ghost
 			ghostInfo ghost;
 			ghost.think = stod(a, nullptr);
-			ghost.xPos = stoi(b, nullptr, 0);
+			ghost.xPos = stoi(b, nullptr, 0) + 2;
 			ghost.yPos = stoi(c, nullptr, 0);
 			ghostList.push_back(ghost);
 			continue;
@@ -398,10 +398,26 @@ void drawScreen(const char* file) {
 			string y = str.substr(0, str.find(" "));
 			str = str.substr(str.find(" ")+1, 9); // delete up to space
 
-			START_X = stoi(x, nullptr, 0);
+			START_X = stoi(x, nullptr, 0) + 2;
 			START_Y = stoi(y, nullptr, 0);
 
 			return; // player position should always be the last thing in a file
+		}
+		// add line numbers
+		if (reachability_map.first_reachable_index_on_line(i) == -1) {
+		  // lines that can't be jumped to are not labeled with linenumber
+		  addch(' ');
+		  addch(' ');
+		} else {
+			attron(COLOR_PAIR(8)); // line numbers
+      string line_number = to_string(i);
+      if (line_number.length() < 2) {
+		    addch(' ');
+		  }
+		  for (unsigned j = 0; j < 2 && j < line_number.length(); j++) {
+		    addch(line_number[j]);
+		  }
+			attroff(COLOR_PAIR(8));
 		}
 		// this is where we actually draw the board
 		for(unsigned j = 0; j < board.at(i).size(); j++) {
@@ -510,6 +526,7 @@ void defineColors() {
 	init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
 	init_pair(6, COLOR_CYAN, COLOR_BLACK);
 	init_pair(7, COLOR_WHITE, COLOR_BLACK);
+	init_pair(8, COLOR_YELLOW, COLOR_BLACK);
 }
 
 
@@ -581,6 +598,9 @@ void init(const char* mapName) {
   std::stringstream ss;
   ss << "Map starts on line " << MAP_BEGIN << " and ends on line " << MAP_END;
   writeError(ss.str());
+	if (MAP_BEGIN != 1) {
+	  writeError("Map invalid; second line in maps/*.txt must be first walkable line; line numbers will be incorrect");
+	}
 	
 
 	// create player

@@ -170,7 +170,7 @@ bool isWall(chtype character) {
 // check to see if the player can move there
 bool isValid(int x, int y) {
 	// Within range of board
-	if(y < 0 || x < 0 || x >= WIDTH)
+	if(y < 0 || x < 0 || x > WIDTH + 1)
 		return false;
 	
 

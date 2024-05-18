@@ -282,6 +282,8 @@ bool avatar::parseWordForward(bool isWord) {
 
 bool avatar::jumpToEnd() {
   int x = reachability_map.last_reachable_index_on_line(y);
+  writeError("last reachable index is");
+  writeError(std::to_string(x));
   if (x != -1) {
     moveTo(x, y);
 	  return true;
@@ -348,7 +350,7 @@ bool avatar::percentJump() {
 
 bool avatar::jumpToChar(char targetChar, bool forward, bool includingTarget, bool acrossWalls) {
   int offset = forward ? 1 : -1;
-  for(int target_x = x + offset; target_x >= 0 && target_x < WIDTH; target_x += offset) {
+  for(int target_x = x + offset; target_x >= 0 && target_x < WIDTH + 1; target_x += offset) {
     if (!acrossWalls && charAt(target_x, y) > 4000000) {
       return false;
     }
