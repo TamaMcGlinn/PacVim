@@ -497,7 +497,7 @@ void drawScreen(const char* file) {
 	}
 	// if the 'p' in a file is not found, that means no player starting
 	// position was specified, and therefore we set the default here:
-	START_X = WIDTH/2;
+	START_X = WIDTH/2 + 2;
 	START_Y = HEIGHT/2;
 }
 
