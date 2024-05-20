@@ -75,19 +75,23 @@ bool avatar::setPos(int theX, int theY) {
 }
 
 bool avatar::moveTo(int a, int b) {
-	if(!isValid(a, b))
+	if(!isValid(a, b)) {
+    // movement invalid, staying still
 		return false;
+	}
 
 	// character at destination 
 	chtype curChar = charAt(a, b);
 	if(isPlayer) {
 		if((curChar & COLOR_PAIR(6)) == COLOR_PAIR(6) ) {
 			GAME_WON = -1;
+		  // player hit a ~
 			return false;
 		}
 		// hit a ghost.. red color
 		if((curChar & COLOR_PAIR(1)) == COLOR_PAIR(1)) {
 			GAME_WON = -1;
+			// player hit a ghost!
 			return false;
 		}
 		
@@ -282,8 +286,6 @@ bool avatar::parseWordForward(bool isWord) {
 
 bool avatar::jumpToEnd() {
   int x = reachability_map.last_reachable_index_on_line(y);
-  writeError("last reachable index is");
-  writeError(std::to_string(x));
   if (x != -1) {
     moveTo(x, y);
 	  return true;

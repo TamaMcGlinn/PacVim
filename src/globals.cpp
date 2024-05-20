@@ -19,7 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "globals.h"
 #include "reachableMap.h"
+#include "ghost1.h"
 #include <string>
+#include <vector>
 
 int TOTAL_POINTS = 0;
 int GAME_WON = 0;
@@ -42,5 +44,4 @@ bool lastJumpIncludedTarget;
 char lastJumpChar = '\0';
 
 ReachableMap reachability_map;
-
-std::mutex mtx;
+std::vector<Ghost1> ghosts;

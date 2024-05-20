@@ -45,8 +45,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <sstream>
 #include <algorithm>
 
-extern void writeError(std::string msg);
-
 // sections are parts of a line, defined by the indexes of the first
 // and last reachable characters on the line. For passages 1-char wide,
 // the x_start and x_end are the same
@@ -56,9 +54,6 @@ struct Section {
 
   bool overlaps(const Section & otherSection) {
     bool overlaps = (otherSection.x_start <= x_end) && (otherSection.x_end >= x_start);
-    std::stringstream ss;
-    ss << x_start << ", " << x_end << (overlaps ? " overlaps " : " doesn't overlap ") << otherSection.x_start << ", " << otherSection.x_end;
-    writeError(ss.str());
     return overlaps;
   }
 };
@@ -165,7 +160,6 @@ public:
     for (auto s : g->sections) {
       addSection(s, false);
     }
-    writeError(is_inside ? "is_inside" : "is_not_inside");
     for(auto s : g->bottom) {
       if (std::find(bottom.begin(), bottom.end(), s) == bottom.end()) {
         bottom.push_back(s);
@@ -182,9 +176,6 @@ class ReachableMap {
 
 public:
   void addLine(std::string str) {
-    writeError("Adding line");
-    writeError(str);
-
     std::vector<std::vector<SectionGroup *>> frontline_groups_to_join;
     lines.push_back(Line(str));
     Line & newline = lines[lines.size()-1];
@@ -198,7 +189,6 @@ public:
       std::vector<SectionGroup *> bottoms_touching;
       for (SectionGroup & g : frontline) {
         if (g.bottom_touches(s)) {
-          writeError("bottom touches");
           bottoms_touching.push_back(&g);
           // potentially add multiple sections to the next bottom for g
           g.addToNextBottom(&s);
@@ -206,10 +196,9 @@ public:
       }
       if (bottoms_touching.empty()) {
         // since it doesn't touch any existing ones, this is a new SectionGroup
-        writeError("new SectionGroup");
         new_frontline_sections.push_back(&s);
       } else if (bottoms_touching.size() > 1) {
-        writeError("going to merge SectionGroups");
+        // going to merge SectionGroups
         frontline_groups_to_join.push_back(bottoms_touching);
       }
     }
@@ -217,7 +206,7 @@ public:
       g.line_finished();
     }
     for (auto join_vector : frontline_groups_to_join) {
-      writeError("merging SectionGroups");
+      // merging SectionGroups
       SectionGroup newGroup;
       // join the groups in this vector
       for (SectionGroup * sg : join_vector) {

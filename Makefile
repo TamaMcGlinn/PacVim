@@ -6,12 +6,7 @@ OBJS      :=  $(patsubst %.cpp,%.o,$(wildcard src/*.cpp))
 MAPS      :=  $(wildcard maps/*)
 CXX       ?=  g++
 CXXFLAGS  +=  -std=c++11 -DMAPS_LOCATION='"$(MAPDIR)"'
-LDLIBS    +=  -lncurses -lpthread
-
-ifneq ($(shell uname -s 2>/dev/null || echo nop),Darwin)
-# OS has POSIX threads in libc
-CXXFLAGS += -pthread
-endif
+LDLIBS    +=  -lncurses
 
 $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ $(LDLIBS)

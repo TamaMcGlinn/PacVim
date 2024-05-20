@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "globals.h"
 #include "helperFns.h"
+#include <thread>
 #include <sstream>
 #include <unistd.h>
 
@@ -28,10 +29,6 @@ std::set<int> WALLS(stuff, stuff + 12);
 
 // Return the character at x, y
 chtype charAt(int x, int y) {
-	//if(!mtx.try_lock())
-	//	return false;
-	//std::lock_guard<std::mutex> lock (mtx);
-	//mtx.lock();
 	// check bounds
 	if(x < 0 || y < 0)
 		return 0;
@@ -44,7 +41,6 @@ chtype charAt(int x, int y) {
 
 	// move back + return
 	mvinch(curY, curX);
-	//mtx.unlock();
 	return value;
 }
 
@@ -54,10 +50,6 @@ chtype letterAt(int x, int y) {
 }
 
 bool writeAt(int x, int y, chtype letter) {
-	//if(!mtx.try_lock())
-		//return false;
-	//std::lock_guard<std::mutex> lock(mtx);
-	//mtx.lock();
 	// Check bounds
 	if(x < 0 || y < 0)
 		return false;
@@ -70,12 +62,10 @@ bool writeAt(int x, int y, chtype letter) {
 
 	addch(letter);
 	mvinch(curY, curX);
-	//mtx.unlock();
 	return true;
 }
 
 bool writeAt(int x, int y, chtype letter, int color) {
-	//mtx.lock();
 	// Check bounds
 	if(x < 0 || y < 0)
 		return false;
@@ -90,7 +80,6 @@ bool writeAt(int x, int y, chtype letter, int color) {
 	attroff(COLOR_PAIR(color));
 	mvinch(curY, curX);
 
-	//mtx.unlock();
 	return true;
 }
 
@@ -103,25 +92,18 @@ void writeError(std::string msg) {
 }
 
 void printAtBottomChar(char msg) {
-	//mtx.lock();
 	std::string x;
 	x += msg;
 	mvprintw(MAP_END+5, 0, "%s", (x).c_str());
-	//mtx.unlock();
 }
+
 void printAtBottom(std::string msg) {
-	//mtx.lock();
 	int x, y;
 	getyx(stdscr, y, x);
 	mvprintw(MAP_END+1, 1, "%s", msg.c_str());
 	mvinch(y,x);
 	move(y,x);
-
-	//mtx.unlock();
 }
-
-
-
 
 // Game state
 void winGame() {
@@ -142,7 +124,7 @@ void winGame() {
 	refresh();
 	GAME_WON = 1;
 	READY = false;
-	sleep(1);
+  std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
 void loseGame() {
@@ -158,7 +140,7 @@ void loseGame() {
 	GAME_WON = -1;
 	READY = false;
 
-	sleep(1);
+  std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
 

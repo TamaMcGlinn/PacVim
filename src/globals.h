@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define GLOBALS_H
 
 #include <set>
+#include <vector>
 #include <mutex>
 #include "reachableMap.h"
 
@@ -42,6 +43,8 @@ extern std::string INPUT; // keyboard characters
 extern int CURRENT_LEVEL;
 extern bool IN_TUTORIAL;
 extern ReachableMap reachability_map;
+class Ghost1;
+extern std::vector<Ghost1> ghosts;
 extern int LIVES;
 extern const int NUM_OF_LEVELS;
 
@@ -57,7 +60,6 @@ extern bool lastJumpWasForwards;
 extern bool lastJumpIncludedTarget;
 extern char lastJumpChar;
 
-extern std::mutex mtx;
 #endif
 
 #ifndef MAPS_LOCATION

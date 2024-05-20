@@ -21,14 +21,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define GHOST1_H
 
 #include "avatar.h"
+#include <time.h>
+
 class Ghost1 : public avatar {
 	private:
+    std::chrono::time_point<std::chrono::steady_clock> last_think_time;
 		double sleepTime;
-		double eval();
-		double eval(int a, int b);
+    double eval(int positionX, int positionY, int playerX, int playerY);
 	public:
-		void lol();
-		void spawnGhost(bool spawned);
+		void spawnGhost();
 		Ghost1(int a, int b, double c) : avatar(a, b) { sleepTime = c; }
 		Ghost1(int a, int b) : avatar(a, b) { sleepTime = 0.5; }
 		Ghost1() : avatar() { sleepTime = 0.5; }

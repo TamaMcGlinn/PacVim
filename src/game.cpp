@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <vector>
+#include <thread>
 #include <iostream>
 
 #include "globals.h"
@@ -70,13 +71,7 @@ void jumpToFirstReachableLine(avatar & unit, int lineNumber, bool searchForwards
   int offset_from_start = lineNumber - 1;
   int real_line_number = MAP_BEGIN + offset_from_start;
   int x_start_of_line = reachability_map.first_reachable_index_on_line(real_line_number);
-  std::stringstream ss2;
-  ss2 << "MAPBEGIN=" << MAP_BEGIN << ", line " << lineNumber << ", really " << real_line_number << " starts at char " << x_start_of_line;
-  writeError(ss2.str());
   while(real_line_number >= MAP_BEGIN && real_line_number <= MAP_END && x_start_of_line == -1) {
-    std::stringstream ss;
-    ss << "line " << real_line_number << " is not reachable, searching " << (searchForwards ? "forwards" : "backwards");
-    writeError(ss.str());
     if (searchForwards) {
 	    ++real_line_number;
 	  } else {
@@ -205,8 +200,6 @@ void doKeystroke(avatar& unit) {
 }	
 
 void onKeystroke(avatar& unit, char key) {
-	mtx.lock();
-	writeError("ON KEY STROKE");
 	writeError("CURRENT INPUT: " + INPUT + key);
 
 	// there are some weird edge cases which I want to handle here:
@@ -249,12 +242,8 @@ void onKeystroke(avatar& unit, char key) {
 		// special ... #G. Move to the line number #
 		if(key == 'G') {
 			INPUT = "";
-			std::stringstream ss3;
-			ss3 << "Num " << num;
-			writeError(ss3.str());
 	    jumpToFirstReachableLine(unit, num, false);
 			refresh();
-			mtx.unlock();
 			return;
 		}
 		// if the input is NOT G, then it means
@@ -283,7 +272,6 @@ void onKeystroke(avatar& unit, char key) {
 		}
 	}
 	refresh();
-	mtx.unlock();
 }
 
 // called right before a level loads
@@ -300,7 +288,7 @@ void levelMessage() {
 	// print + pause
 	printw("%s", msg.c_str());
 	refresh();
-	usleep(1500000);
+  std::this_thread::sleep_for(std::chrono::milliseconds(1500));
 
 	// clear and reset everything
 	clear();
@@ -313,8 +301,6 @@ void drawScreen(const char* file) {
 	levelMessage();
 	clear();
 	
-	writeError("DRAWING THE SCREEN");
-
 	ifstream in(file);
 
 	// clear ghostList because we are gonna obtain new ones
@@ -531,11 +517,10 @@ void defineColors() {
 
 
 void playGame(time_t lastTime, avatar &player) {
-
 	// consume any inputs in the buffer, or else the inputs will affect
 	// the game right as it begins by moving the player 
 	char ch;
-	usleep(10000);
+  std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	printAtBottom("PRESS ENTER TO PLAY!\n    ESC OR q TO EXIT!");
 	while(true) {
 		
@@ -559,8 +544,11 @@ void playGame(time_t lastTime, avatar &player) {
 	// continue playing until the player hits q or the game is over
 	while(GAME_WON == 0) {
 		key = getch();
+	  if (key != ERR) {
+		  // A char was received
+		  onKeystroke(player, key);
+	  }
 
-		onKeystroke(player, key);
 		stringstream ss;
 
 		// increment points as game progresses
@@ -571,7 +559,12 @@ void playGame(time_t lastTime, avatar &player) {
 
 		// redundant movement
 		move(player.getY(), player.getX());
+
+		for (auto & ghost : ghosts) {
+		  ghost.think();
+		}
 		refresh();
+    std::this_thread::sleep_for(std::chrono::milliseconds(5));
 	}	
 	
 	clear();
@@ -596,8 +589,6 @@ void init(const char* mapName) {
 	drawScreen(mapName);
 
   std::stringstream ss;
-  ss << "Map starts on line " << MAP_BEGIN << " and ends on line " << MAP_END;
-  writeError(ss.str());
 	if (MAP_BEGIN != 1) {
 	  writeError("Map invalid; second line in maps/*.txt must be first walkable line; line numbers will be incorrect");
 	}
@@ -607,22 +598,17 @@ void init(const char* mapName) {
 	avatar player (START_X, START_Y, true);
 
 	// spawn ghosts	
-	std::vector<std::thread> ghost_threads;
-	for(int i = 0; i < ghostList.size(); ++i){
-		Ghost1 ghost = Ghost1(ghostList[i].xPos, ghostList[i].yPos,
-			(THINK_MULTIPLIER * ghostList[i].think), COLOR_RED);
-
-		ghost_threads.push_back(thread(&Ghost1::spawnGhost, ghost, false));
+	for(auto ghost_info : ghostList){
+	  double think_time = THINK_MULTIPLIER * ghost_info.think;
+	  auto newGhost = Ghost1(ghost_info.xPos, ghost_info.yPos, think_time, COLOR_RED);
+	  newGhost.spawnGhost();
+	  ghosts.push_back(newGhost);
 	}
 	
 	// begin game	
 	playGame(time(0), player);
 	writeError("GAME ENDED!");
-
-	// join threads
-	for(auto& ghost_thread : ghost_threads){
-		ghost_thread.join();
-	}
+	ghosts.clear();
 }
 
 bool checkParams(int argc, char** argv) {
@@ -686,6 +672,7 @@ int main(int argc, char** argv)
 {
 	// Setup
 	WINDOW* win = initscr();
+	nodelay(win, TRUE);
 	defineColors();
 	noecho(); // dont print anything to the screen
 
@@ -743,7 +730,7 @@ int main(int argc, char** argv)
 		}
 	}	
 	//endwin();
-	sleep(2);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
 	endwin();
 	return 0;
 }          

@@ -193,8 +193,7 @@ a basic greedy algorithm based on the distance of the ghost's potential
 moves (up, down, right, left) and the player.
 <br>
 
-Each ghost contains its own thread. A global mutex, called `mtx`, is
-used (in `think`) to ensure that resources are shared properly.
+Each ghost has its own think function called periodically to move.
 
 `helperFns.cpp`
 Contains methods that allow easy changes of the screen. A few of them:
@@ -211,8 +210,8 @@ the proper map name is determined and loaded. Data is reset (such as as the poin
 the ghost AI, etc). The level is incremented.
 <br>
 <b>init(const char*)</b> - called by <b>`main`</b>. Calls <b>`drawScreen(str map)`</b>, creates and
-spawns player and ghosts threads. Then calls <b>`playGame`</b>. After <b>`playGame`</b>
-ends, all the ghost threads are deleted, and then we go back to the <b>`main`</b> method.
+spawns player and ghosts. Then calls <b>`playGame`</b>. After <b>`playGame`</b>
+ends, we go back to the <b>`main`</b> method.
 <br>
 <b>drawScreen(char* map)</b> - called by <b>`init`</b>. Reads from text file given
 by parameter. Loads everything onto the screen with the proper color and gets
