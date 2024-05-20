@@ -346,6 +346,8 @@ void drawScreen(const char* file) {
 	}
 	in.close();
 
+  bool player_start_specified = false;
+
 	// iterate thru each line, parse, create board, create ghost attributes 
 	for(unsigned i = 0; i < board.size(); i++) {
 
@@ -374,6 +376,8 @@ void drawScreen(const char* file) {
 			continue;
 		} else if(boardStr.at(i).at(0) == 'p') {
 		// this is where the player starting position is handled 
+      player_start_specified = true;
+
 			string str = boardStr.at(i);
 			str.erase(str.begin(), str.begin()+1); 
 
@@ -386,8 +390,7 @@ void drawScreen(const char* file) {
 
 			START_X = stoi(x, nullptr, 0) + 2;
 			START_Y = stoi(y, nullptr, 0);
-
-			return; // player position should always be the last thing in a file
+			continue;
 		}
 		// add line numbers
 		if (reachability_map.first_reachable_index_on_line(i) == -1) {
@@ -495,10 +498,11 @@ void drawScreen(const char* file) {
 		MAP_END++;
 		addch('\n');
 	}
-	// if the 'p' in a file is not found, that means no player starting
-	// position was specified, and therefore we set the default here:
-	START_X = WIDTH/2 + 2;
-	START_Y = HEIGHT/2;
+	if (!player_start_specified) {
+    // in case 'p' is not specified, set the default here
+    START_X = WIDTH/2 + 2;
+    START_Y = HEIGHT/2;
+  }
 }
 
 
