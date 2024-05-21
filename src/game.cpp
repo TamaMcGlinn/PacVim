@@ -37,6 +37,7 @@ struct ghostInfo {
 	double think;
 	int xPos;
 	int yPos;
+	Ghost_Species species;
 };
 vector<ghostInfo> ghostList;
 
@@ -318,7 +319,7 @@ void drawScreen(const char* file) {
 	// store lines from text file into 'board' and 'boardStr'
 	WIDTH = 0; // largest width in the map
 	while(getline(in, str)) {
-	  if (str.empty() || (str[0] != 'p' && str[0] != '/')) {
+	  if (str.empty() || (str[0] != 'p' && str[0] != '/' && str[0] != 'r' && str[0] != 'c' && str[0] != 'a')) {
 	    reachability_map.addLine(str);
 	  }
     writeError(str);
@@ -351,11 +352,33 @@ void drawScreen(const char* file) {
 	// iterate thru each line, parse, create board, create ghost attributes 
 	for(unsigned i = 0; i < board.size(); i++) {
 
+		string str = boardStr.at(i);
 		// parse info about ghosts, add them to ghostlist
-		if(boardStr.at(i).at(0) == '/') {
-			// format: /*thinkTime* *x-position* *y-position* -- delimited by spaces ofc
+		if(str.at(0) == '/' || str.at(0) == 'r' || str.at(0) == 'a' || str.at(0) == 'c') {
+			// format: *type**thinkTime* *x-position* *y-position* -- delimited by spaces ofc
 			// EG: /1.5 19 7
-			string str = boardStr.at(i);
+
+			// create the ghost
+			ghostInfo ghost;
+			char ghost_id = str.at(0);
+			switch(ghost_id) {
+			  case '/':
+			    ghost.species = Ghost_Species::Seeker;
+			    break;
+			  case 'r':
+			    ghost.species = Ghost_Species::Lemming;
+			    break;
+			  case 'c':
+			    ghost.species = Ghost_Species::Clockwise_Lemming;
+			    break;
+			  case 'a':
+			    ghost.species = Ghost_Species::AntiClockwise_Lemming;
+			    break;
+			  default:
+			    writeError("Invalid ghost species in map definition, must be / for normal ghost, r for random lemming, c or a for (anti)clockwise lemming!");
+			    ghost.species = Ghost_Species::Seeker;
+			}
+
 			str.erase(str.begin(), str.begin()+1);
 
 			string a = str.substr(0, str.find(" "));
@@ -367,18 +390,15 @@ void drawScreen(const char* file) {
 			string c = str.substr(0, str.find(" "));
 			str = str.substr(str.find(" ")+1, 9);
 		
-			// create the ghost
-			ghostInfo ghost;
 			ghost.think = stod(a, nullptr);
 			ghost.xPos = stoi(b, nullptr, 0) + 2;
 			ghost.yPos = stoi(c, nullptr, 0);
 			ghostList.push_back(ghost);
 			continue;
-		} else if(boardStr.at(i).at(0) == 'p') {
+		} else if(str.at(0) == 'p') {
 		// this is where the player starting position is handled 
       player_start_specified = true;
 
-			string str = boardStr.at(i);
 			str.erase(str.begin(), str.begin()+1); 
 
 			// get x position
@@ -599,12 +619,12 @@ void init(const char* mapName) {
 	
 
 	// create player
-	avatar player (START_X, START_Y, true);
+	avatar player (START_X, START_Y, true, ' ', COLOR_WHITE);
 
 	// spawn ghosts	
 	for(auto ghost_info : ghostList){
 	  double think_time = THINK_MULTIPLIER * ghost_info.think;
-	  auto newGhost = Ghost1(ghost_info.xPos, ghost_info.yPos, think_time, COLOR_RED);
+	  auto newGhost = Ghost1(ghost_info.species, ghost_info.xPos, ghost_info.yPos, think_time);
 	  newGhost.spawnGhost();
 	  ghosts.push_back(newGhost);
 	}

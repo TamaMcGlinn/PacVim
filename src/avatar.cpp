@@ -21,45 +21,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "globals.h"
 
-avatar::avatar() {
-	x = 1;
-	y = 1;
-	lives = 3;
-	points = 0;
-	portrait = 'G';
-	isPlayer = false;
-	color = COLOR_WHITE;
-}
-
-avatar::avatar(int a, int b) {
-	x = a;
-	y = b;
-	lives = 3;
-	points = 0;
-	portrait = 'G';
-	isPlayer = false;
-	color = COLOR_WHITE;
-	letterUnder = charAt(a, b);
-}
-
-
-avatar::avatar(int a, int b, bool human) {
-	x = a;
-	y = b;
+avatar::avatar(int theX, int theY, bool human, char p, int c) {
+	x = theX;
+	y = theY;
 	lives = 3;
 	points = 0;
 	isPlayer = human;
-	if(human)
-		portrait = ' '; // default for player
-	else
-		portrait = 'G';
-	letterUnder = charAt(a, b);
-	moveTo(a, b);
-}
-
-avatar::avatar(int a, int b, bool human, int c) {
-	avatar(a, b, human);
+	portrait = p;
+	letterUnder = charAt(x, y);
 	color = c;
+	moveTo(x, y);
 }
 
 int avatar::getPoints() { return points; }

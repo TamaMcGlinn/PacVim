@@ -27,10 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Avatar Class -- can be a ghost or player
 class avatar {
 	public:
-		avatar();
-		avatar(int, int);
-		avatar(int, int, bool);
-		avatar(int, int, bool, int);
+    avatar(int theX, int theY, bool human, char p, int c);
 	protected:
 		chtype letterUnder;
 		int x;
