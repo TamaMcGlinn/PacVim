@@ -223,26 +223,6 @@ loop allows the player to continuously input keystrokes. When a keystroke is inp
 <b>`onKeystroke`</b> is called
 <br>
 
+# Future plans
 
-<h2><a name="ToDoBugsTag">To-dos / Bugs</a></h2>
-<ul>
-	<li>More testing on `#G` and `G` commands</li>
-	<li>G can go out of bounds on Map 8 with the boxes. #G (between boxes)</li>
-	<li>G won't move to proper line, it can hit the last wall rather than the last word (map2)</li>
-	<li>Refactor code, more comments</li>
-</ul>
-
-
-<h2>LICENSE</h2>
-PacVim is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License (LGPL) as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-PacVim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+See the [Roadmap](/ROADMAP.md) for future plans.
