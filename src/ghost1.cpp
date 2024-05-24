@@ -57,7 +57,6 @@ void Ghost1::think() {
 }
 
 void Ghost1::seeker_think() {
-  writeError("seeker_think()");
 	// evaluate the four potential paths and move accordingly
 	int playerX, playerY;
 	getyx(stdscr, playerY, playerX);
