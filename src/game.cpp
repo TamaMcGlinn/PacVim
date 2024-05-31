@@ -87,6 +87,12 @@ void jumpToFirstReachableLine(avatar & unit, int lineNumber, bool searchForwards
   }
 }
 
+void quit_game() {
+	writeError("Trying to quit!");
+	endwin();
+	exit(0);
+}
+
 void doKeystroke(avatar& unit) {
 	if(INPUT== "q") { 
 		endwin();
@@ -545,7 +551,8 @@ void playGame(time_t lastTime, avatar &player) {
 	// the game right as it begins by moving the player 
 	char ch;
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
-	printAtBottom("PRESS ENTER TO PLAY!\n    ESC OR q TO EXIT!");
+	printAtBottom("PRESS ENTER TO PLAY!\n    :q TO EXIT!");
+	bool pressed_colon = false;
 	while(true) {
 		
 		ch = getch();
@@ -556,10 +563,12 @@ void playGame(time_t lastTime, avatar &player) {
 				break;
 			}
 		}
-		// quit the game if we type escape or q
-		else if(ch == 27 || ch == 'q'){
-				endwin();
-				exit(0);
+		// quit the game if we type :q
+		if(ch == ':'){
+      pressed_colon = true;
+		} else if (pressed_colon && ch == 'q') {
+      writeError("quitting");
+			quit_game();
 		}
 	}
 	printAtBottom("GO!                  \n                       ");
