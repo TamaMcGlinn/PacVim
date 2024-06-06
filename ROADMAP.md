@@ -1,6 +1,22 @@
 # :q to quit
 
 Just to be consistent with vim, :q rather than q should be to quit.
+Currently this is only the case in the start screen.
+
+# 12gg doesn't work
+
+12gg should do the same as 12G, jump to that line
+
+# 3fg doesn't work
+
+fg followed by 3; works, but not 3fg
+
+# / search, n and N
+
+/ should take all characters following until <CR> and, as it is being typed, jump to the first match of those letters.
+After <CR>, n jumps to the next occurrence, and N to the previous.
+This could break levels that rely on not being able to jump somewhere,
+so I'm not sure it should be added.
 
 # better difficulty settings
 
