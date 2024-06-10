@@ -21,8 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "ghost1.h"
 #include <random>
 
-double Ghost1::eval(int positionX, int positionY, int playerX, int playerY) {
-	if(!isValid(positionX,positionY))
+double Ghost1::eval(int positionX, int positionY, int playerX, int playerY, bool ignoreWalls) {
+	if(!isValid(positionX,positionY,ignoreWalls))
 		return 1000;
 	return sqrt(pow(playerY-positionY, 2.0) + pow(playerX-positionX, 2.0));
 }
@@ -51,28 +51,34 @@ void Ghost1::think() {
 	  case Ghost_Species::AntiClockwise_Lemming:
 	    lemming_think();
 	    break;
+	  case Ghost_Species::Agent_Smith:
+	    smith_think();
+	    break;
 	  default:
 	    writeError("Invalid species!");
 	}
 }
 
 void Ghost1::seeker_think() {
+  bool ignoreWalls = can_ignore_walls ? rare_ability(50) : false;
+
 	// evaluate the four potential paths and move accordingly
 	int playerX, playerY;
 	getyx(stdscr, playerY, playerX);
-	double up = eval(x, y-1, playerX, playerY);
-	double down = eval(x, y+1, playerX, playerY);
-	double left = eval(x-1, y, playerX, playerY);
-	double right = eval(x+1, y, playerX, playerY);
+
+	double up = eval(x, y-1, playerX, playerY, ignoreWalls);
+	double down = eval(x, y+1, playerX, playerY, ignoreWalls);
+	double left = eval(x-1, y, playerX, playerY, ignoreWalls);
+	double right = eval(x+1, y, playerX, playerY, ignoreWalls);
 
 	if(up <= down && up <= left && up <= right) {
-		moveTo(x, y-1);
+		moveTo(x, y-1, ignoreWalls);
 	} else if(down <= left && down <= right && down <= up) {
-		moveTo(x, y+1);
+		moveTo(x, y+1, ignoreWalls);
 	} else if(left <= right && left <= up && left <= down) {
-		moveTo(x-1, y);
+		moveTo(x-1, y, ignoreWalls);
 	} else if(right <= up && right <= down && right <= left) {
-		moveTo(x+1, y);
+		moveTo(x+1, y, ignoreWalls);
 	}
 }
 
@@ -136,7 +142,7 @@ Direction Ghost1::get_next_dir(Direction previous_dir) {
 
 bool Ghost1::ghost_at_position(int x, int y) {
 	chtype curChar = charAt(x, y);
-  return (curChar & COLOR_PAIR(1)) == COLOR_PAIR(1);
+  return PAIR_NUMBER(curChar & A_COLOR) == 1;
 }
 
 bool Ghost1::direction_valid(Direction dir) {
@@ -155,6 +161,14 @@ bool Ghost1::direction_valid(Direction dir) {
   }
 }
 
+bool Ghost1::rare_ability(int rarity) {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> dist(0, rarity);
+  int pick_random = dist(gen);
+  return pick_random == 0;
+}
+
 Direction Ghost1::get_next_valid_dir(Direction direction) {
   int directions_tried = 0;
   for(int directions_tried = 0; !direction_valid(direction); direction = get_next_dir(direction), ++directions_tried) {
@@ -164,7 +178,25 @@ Direction Ghost1::get_next_valid_dir(Direction direction) {
       return Direction::North;
     }
   }
+  if (direction == current_direction) {
+    if (rare_ability(200)) {
+      // very rarely change direction when not hitting wall
+      return get_next_valid_dir(get_next_dir(direction));
+    }
+  }
   return direction;
+}
+
+void Ghost1::smith_think() {
+  int playerX = player.getX();
+  int playerY = player.getY();
+  float distance = sqrt( (x - playerX) * (x - playerX) +
+                         (y - playerY) * (y - playerY) );
+  std::stringstream ss;
+  if (distance < 4.1 and distance >= 0.1) {
+    species = Ghost_Species::Seeker;
+    moveTo(x, y, true);
+  }
 }
 
 void Ghost1::lemming_think() {
@@ -190,7 +222,15 @@ void Ghost1::lemming_pickdir() {
   pick_direction(next_dir);
 }
 
-void Ghost1::spawnGhost() { 
+void Ghost1::spawn(int theX, int theY) {
+  if (species == Ghost_Species::Agent_Smith) {
+    x = theX;
+    y = theY;
+	  letterUnder = charAt(x, y);
+    can_ignore_walls = true;
+  } else {
+    avatar::spawn(theX, theY);
+  }
   last_think_time = std::chrono::steady_clock::now();
 }
 
@@ -242,10 +282,4 @@ void Ghost1::pick_random_direction() {
   int random_index = dist(gen);
   Direction random_dir = valid_dirs[random_index];
   pick_direction(random_dir);
-}
-
-void Ghost1::pick_clockwise_next_direction() {
-  // up -> right
-  // if (previous_xoffset == 1) {
-  // }
 }

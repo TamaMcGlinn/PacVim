@@ -52,12 +52,6 @@ void gotoLineBeginning(int line, avatar &unit) {
 
 void onKeystroke(avatar& unit, char key);
 
-void getMore(avatar& unit, char key) {
-	char nextChar = getch();
-	onKeystroke(unit, key);
-}
-
-
 // true if string only contains digits...regex would be nice
 bool isFullDigits(string &str) {
 	for(unsigned i = 0; i < str.size(); i++) {
@@ -68,18 +62,8 @@ bool isFullDigits(string &str) {
 }
 
 void jumpToFirstReachableLine(avatar & unit, int lineNumber, bool searchForwards) {
-  lineNumber = max(0, min(lineNumber, MAP_END - MAP_BEGIN));
-  int offset_from_start = lineNumber - 1;
-  int real_line_number = MAP_BEGIN + offset_from_start;
+  int real_line_number = find_reachable_line(lineNumber, searchForwards);
   int x_start_of_line = reachability_map.first_reachable_index_on_line(real_line_number);
-  while(real_line_number >= MAP_BEGIN && real_line_number <= MAP_END && x_start_of_line == -1) {
-    if (searchForwards) {
-	    ++real_line_number;
-	  } else {
-	    --real_line_number;
-	  }
-    x_start_of_line = reachability_map.first_reachable_index_on_line(real_line_number);
-  }
   if (x_start_of_line != -1) {
 	  unit.moveTo(x_start_of_line, real_line_number);
   } else {
@@ -88,48 +72,48 @@ void jumpToFirstReachableLine(avatar & unit, int lineNumber, bool searchForwards
 }
 
 void quit_game() {
-	writeError("Trying to quit!");
 	endwin();
 	exit(0);
 }
 
-void doKeystroke(avatar& unit) {
-	if(INPUT== "q") { 
-		endwin();
-		exit(0);
+void doKeystroke(avatar& unit, int repeats = 1) {
+	if(INPUT== "q") {
+	  writeError("User is attempting to quit vim (should be :q, not q)");
+	  // but let's not tell him in-game
+		return;
 	}
 	else if(INPUT == "h") {
-		unit.moveLeft();
+		unit.moveLeft(repeats);
 	}
 	else if(INPUT == "j") {
-		unit.moveDown();
+		unit.moveDown(repeats);
 	}
 	else if(INPUT == "k") {
-		unit.moveUp(); 
+		unit.moveUp(repeats);
 	}
 	else if(INPUT == "l") {
-		unit.moveRight();
+		unit.moveRight(repeats);
 	}
 	else if(INPUT == "w") {
-		unit.parseWordForward(true);
+		unit.parseWordForward(true, repeats);
 	}
 	else if(INPUT == "W") {
-		unit.parseWordForward(false);	
+		unit.parseWordForward(false, repeats);
 	}
 	else if(INPUT == "b") {
-		unit.parseWordBackward(true);
+		unit.parseWordBackward(true, repeats);
 	}
 	else if(INPUT == "B") {
-		unit.parseWordBackward(false);
+		unit.parseWordBackward(false, repeats);
 	}
 	else if(INPUT == "E") {
-		unit.parseWordEnd(false);
+		unit.parseWordEnd(false, repeats);
 	}
 	else if(INPUT == "e") {
-		unit.parseWordEnd(true);
+		unit.parseWordEnd(true, repeats);
 	}
 	else if(INPUT == "$") { 
-		unit.jumpToEnd(); 
+		unit.jumpToEnd(repeats); 
 	}
 	else if(INPUT == "0") {
 		unit.jumpToBeginning();
@@ -138,25 +122,26 @@ void doKeystroke(avatar& unit) {
 	  unit.percentJump();
 	}
 	else if(INPUT.size() == 2 && (INPUT[0] == 'f')){
-	  unit.jumpForward(INPUT[1], true, false);
+	  unit.jumpForward(INPUT[1], true, false, repeats);
     lastJumpWasForwards = true;
     lastJumpIncludedTarget = true;
     lastJumpChar = INPUT[1];
 	}
 	else if(INPUT.size() == 2 && (INPUT[0] == 'F')){
-	  unit.jumpBackward(INPUT[1], true, false);
+	  unit.jumpBackward(INPUT[1], true, false, repeats);
     lastJumpWasForwards = false;
     lastJumpIncludedTarget = true;
     lastJumpChar = INPUT[1];
 	}
 	else if(INPUT.size() == 2 && (INPUT[0] == 't')){
-	  unit.jumpForward(INPUT[1], false, false);
+	  writeError(std::to_string(repeats));
+	  unit.jumpForward(INPUT[1], false, false, repeats);
     lastJumpWasForwards = true;
     lastJumpIncludedTarget = false;
     lastJumpChar = INPUT[1];
 	}
 	else if(INPUT.size() == 2 && (INPUT[0] == 'T')){
-	  unit.jumpBackward(INPUT[1], false, false);
+	  unit.jumpBackward(INPUT[1], false, false, repeats);
     lastJumpWasForwards = false;
     lastJumpIncludedTarget = false;
     lastJumpChar = INPUT[1];
@@ -167,7 +152,7 @@ void doKeystroke(avatar& unit) {
 	    return;
 	  }
     // jumpToChar(char targetChar, bool forward, bool includingTarget, bool acrossWalls) {
-		unit.jumpToChar(lastJumpChar, lastJumpWasForwards, lastJumpIncludedTarget, false);
+		unit.jumpToChar(lastJumpChar, lastJumpWasForwards, lastJumpIncludedTarget, false, repeats);
 	}
 	else if(INPUT == ",") {
 	  if (lastJumpChar == '\0') {
@@ -175,10 +160,10 @@ void doKeystroke(avatar& unit) {
 	    return;
 	  }
     // jumpToChar(char targetChar, bool forward, bool includingTarget, bool acrossWalls) {
-		unit.jumpToChar(lastJumpChar, !lastJumpWasForwards, lastJumpIncludedTarget, false);
+		unit.jumpToChar(lastJumpChar, !lastJumpWasForwards, lastJumpIncludedTarget, false, repeats);
 	}
 	else if(INPUT == "gg" || INPUT == "1G" || INPUT == "H") {
-	  jumpToFirstReachableLine(unit, 1, true);
+	  jumpToFirstReachableLine(unit, repeats, false);
 	  INPUT="";
 	}
 	else if(INPUT == "G" || INPUT == "L") { 
@@ -195,7 +180,7 @@ void doKeystroke(avatar& unit) {
 
 		char currentChar = charAt(unit.getX(), unit.getY());
 		if (currentChar == ' ') {
-			unit.parseWordForward(true);
+			unit.parseWordForward(true, repeats);
 		}
 	}
 	else if(INPUT == "!") {
@@ -204,7 +189,7 @@ void doKeystroke(avatar& unit) {
 	else if(INPUT == "&") {
 		GAME_WON = 1; // l337 cheetz
 	}
-}	
+}
 
 void onKeystroke(avatar& unit, char key) {
 	writeError("CURRENT INPUT: " + INPUT + key);
@@ -216,25 +201,33 @@ void onKeystroke(avatar& unit, char key) {
 	// 4. fx = for any x character, jump forward to it, Fx for backward
 
 	// if f/F/t/T was pressed, allow every character
-	if(INPUT.size() == 1 && (INPUT[0] == 'f' || INPUT[0] == 'F'
-	                      || INPUT[0] == 't' || INPUT[0] == 'T')) {
-	  INPUT += key;
-	  doKeystroke(unit);
+	int input_size = INPUT.size();
+	char last_input = '\0';
+	if (input_size > 0) {
+	  last_input = INPUT[input_size-1];
+	}
+	if(input_size >= 1 && (last_input == 'f' || last_input == 'F'
+	                      || last_input == 't' || last_input == 'T')) {
+	  int repeats = 1;
+	  if (input_size > 1) {
+      repeats = std::stoi(INPUT, nullptr, 0);
+	  }
+	  INPUT = {last_input, key};
+	  doKeystroke(unit, repeats);
 	  INPUT = "";
 	}
 	else if(key == 'g') { 
-		// have 'g' (only) in buffer, or buffer is empty
-		if(INPUT.empty() || (INPUT.size() == 1 && INPUT[0] == 'g')) {	
-			
-			INPUT += key;
-			if(INPUT == "gg") {
-				doKeystroke(unit);
-				INPUT = "";
-			}
-		}
-		else {
-			INPUT = "";
-		}
+	  if (last_input == 'g') {
+	    int repeats = 1;
+	    if (isdigit(INPUT[0])) {
+        repeats = std::stoi(INPUT, nullptr, 0);
+      }
+      INPUT = "gg";
+      doKeystroke(unit, repeats);
+      INPUT = "";
+	  } else {
+	    INPUT += key;
+	  }
 	}
 	// If INPUT != empty, and the user inputs a number, INPUT
 	// should reset.. EG: 3g3 dd = 1 dd, not 3 dd
@@ -243,7 +236,13 @@ void onKeystroke(avatar& unit, char key) {
 		INPUT = "";
 	}
 	// we have full digits and then enter a character
-	else if(!INPUT.empty() && isFullDigits(INPUT) && !isdigit(key)) { 
+	else if(!INPUT.empty() && isFullDigits(INPUT) && !isdigit(key)) {
+		// special, wait for next key
+		if(key == 'f' || key == 'F' || key == 't' || key == 'T' || key == 'g') {
+		  INPUT += key;
+		  return;
+		}
+
 		int num = std::stoi(INPUT, nullptr, 0); // extracts 33 from 33dd for example
 		
 		// special ... #G. Move to the line number #
@@ -257,9 +256,7 @@ void onKeystroke(avatar& unit, char key) {
 		// we are repeating a keystroke.. eg 3w = w, three times
 	
 		INPUT = key; 
-		for(int i = 0; i < num; i++) {
-			doKeystroke(unit);
-		}
+		doKeystroke(unit, num);
 		INPUT = "";
 	}
 	else {
@@ -360,7 +357,7 @@ void drawScreen(const char* file) {
 
 		string str = boardStr.at(i);
 		// parse info about ghosts, add them to ghostlist
-		if(str.at(0) == '/' || str.at(0) == 'r' || str.at(0) == 'a' || str.at(0) == 'c') {
+		if(str.at(0) == '/' || str.at(0) == 'r' || str.at(0) == 'a' || str.at(0) == 'c' || str.at(0) == 's') {
 			// format: *type**thinkTime* *x-position* *y-position* -- delimited by spaces ofc
 			// EG: /1.5 19 7
 
@@ -379,6 +376,9 @@ void drawScreen(const char* file) {
 			    break;
 			  case 'a':
 			    ghost.species = Ghost_Species::AntiClockwise_Lemming;
+			    break;
+			  case 's':
+			    ghost.species = Ghost_Species::Agent_Smith;
 			    break;
 			  default:
 			    writeError("Invalid ghost species in map definition, must be / for normal ghost, r for random lemming, c or a for (anti)clockwise lemming!");
@@ -564,22 +564,33 @@ void playGame(time_t lastTime, avatar &player) {
 			}
 		}
 		// quit the game if we type :q
+		if (pressed_colon && ch == 'q') {
+			quit_game();
+		}
 		if(ch == ':'){
       pressed_colon = true;
-		} else if (pressed_colon && ch == 'q') {
-      writeError("quitting");
-			quit_game();
+		} else if (ch != -1) {
+		  pressed_colon = false;
 		}
 	}
 	printAtBottom("GO!                  \n                       ");
 	char key;
 	
+	pressed_colon = false;
 	// continue playing until the player hits q or the game is over
 	while(GAME_WON == 0) {
 		key = getch();
 	  if (key != ERR) {
-		  // A char was received
-		  onKeystroke(player, key);
+		  if (pressed_colon && key == 'q') {
+			  quit_game();
+		  }
+		  if(key == ':'){
+        pressed_colon = true;
+		  } else {
+		    pressed_colon = false;
+		    // A char was received
+		    onKeystroke(player, key);
+		  }
 	  }
 
 		stringstream ss;
@@ -587,8 +598,9 @@ void playGame(time_t lastTime, avatar &player) {
 		// increment points as game progresses
 		ss << "Points: " << player.getPoints() << "/" 
 			<< TOTAL_POINTS << "\n" << " Lives: " << LIVES << "\n";
-		if(GAME_WON == 0)
+		if(GAME_WON == 0) {
 			printAtBottom(ss.str());
+		}
 
 		// redundant movement
 		move(player.getY(), player.getX());
@@ -598,7 +610,7 @@ void playGame(time_t lastTime, avatar &player) {
 		}
 		refresh();
     std::this_thread::sleep_for(std::chrono::milliseconds(5));
-	}	
+	}
 	
 	clear();
 	if(GAME_WON == 1) {
@@ -628,13 +640,13 @@ void init(const char* mapName) {
 	
 
 	// create player
-	avatar player (START_X, START_Y, true, ' ', COLOR_WHITE);
+	player.spawn(START_X, START_Y);
 
 	// spawn ghosts	
 	for(auto ghost_info : ghostList){
 	  double think_time = THINK_MULTIPLIER * ghost_info.think;
-	  auto newGhost = Ghost1(ghost_info.species, ghost_info.xPos, ghost_info.yPos, think_time);
-	  newGhost.spawnGhost();
+	  auto newGhost = Ghost1(ghost_info.species, think_time);
+	  newGhost.spawn(ghost_info.xPos, ghost_info.yPos);
 	  ghosts.push_back(newGhost);
 	}
 	

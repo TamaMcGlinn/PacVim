@@ -1,6 +1,7 @@
 /*
 
 Copyright 2015 Jamal Moon
+Copyright 2024 Tama McGlinn
 
 PacVim is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License (LGPL) as 
@@ -29,6 +30,7 @@ enum class Ghost_Species {
   Lemming, // picks random direction, continued until hitting wall
   Clockwise_Lemming, // like Lemming but always travels clockwise
   AntiClockwise_Lemming, // like Lemming but always travels anti-clockwise
+  Agent_Smith, // appears and starts moving when close by; can go through walls
 };
 
 enum class Direction {
@@ -43,6 +45,7 @@ struct offset {
 class Ghost1 : public avatar {
 	private:
 	  Ghost_Species species;
+		bool can_ignore_walls = false; // Agent Smith can do this (after morphing into seeker)
     std::chrono::time_point<std::chrono::steady_clock> last_think_time;
 
     // previous direction of travel for lemmings
@@ -57,17 +60,18 @@ class Ghost1 : public avatar {
     Direction get_most_pronounced_direction();
     Direction get_next_dir(Direction previous_dir);
     Direction get_next_valid_dir(Direction direction);
-    double eval(int positionX, int positionY, int playerX, int playerY);
+    bool rare_ability(int rarity);
+    double eval(int positionX, int positionY, int playerX, int playerY, bool ignoreWalls);
     void pick_random_direction();
-    void pick_clockwise_next_direction();
+    void smith_think();
     void seeker_think();
     void lemming_think();
     void lemming_pickdir();
 	public:
-		void spawnGhost();
-		Ghost1(Ghost_Species s, int theX, int theY, double c) : species(s), avatar(theX, theY, false, 'G', COLOR_RED) {
+		Ghost1(Ghost_Species s, double c) : species(s), avatar(false, 'G', COLOR_RED) {
 		  sleepTime = c;
 		}
+    virtual void spawn(int theX, int theY) override;
 		void think();
 };
 #endif

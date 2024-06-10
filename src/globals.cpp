@@ -29,7 +29,7 @@ int FREEZE_GHOSTS = 0;
 std::string INPUT = "";
 bool READY = false;
 int LIVES = 3;
-const int NUM_OF_LEVELS = 14;
+const int NUM_OF_LEVELS = 15;
 
 double THINK_MULTIPLIER = 1.0;
 
@@ -45,3 +45,5 @@ char lastJumpChar = '\0';
 
 ReachableMap reachability_map;
 std::vector<Ghost1> ghosts;
+
+avatar player (true, ' ', COLOR_WHITE);

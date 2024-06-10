@@ -21,15 +21,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "globals.h"
 
-avatar::avatar(int theX, int theY, bool human, char p, int c) {
-	x = theX;
-	y = theY;
+avatar::avatar(bool human, char p, int c) {
 	lives = 3;
-	points = 0;
 	isPlayer = human;
 	portrait = p;
-	letterUnder = charAt(x, y);
 	color = c;
+}
+
+void avatar::spawn(int theX, int theY) {
+  points = 0;
+	x = theX;
+	y = theY;
+	letterUnder = charAt(x, y);
 	moveTo(x, y);
 }
 
@@ -45,8 +48,13 @@ bool avatar::setPos(int theX, int theY) {
 	return true;
 }
 
-bool avatar::moveTo(int a, int b) {
-	if(!isValid(a, b)) {
+bool avatar::moveTo(int a, int b, bool ignoreWalls) {
+  if (GAME_WON == 1){
+    // this prevents losing from doing repeated action like 88e
+    // that first wins the game and then runs into an enemy or ~
+    return false;
+  }
+	if(!isValid(a, b, ignoreWalls)) {
     // movement invalid, staying still
 		return false;
 	}
@@ -54,20 +62,20 @@ bool avatar::moveTo(int a, int b) {
 	// character at destination 
 	chtype curChar = charAt(a, b);
 	if(isPlayer) {
-		if((curChar & COLOR_PAIR(6)) == COLOR_PAIR(6) ) {
+    if (PAIR_NUMBER(curChar & A_COLOR) == 6) {
 			GAME_WON = -1;
 		  // player hit a ~
 			return false;
 		}
 		// hit a ghost.. red color
-		if((curChar & COLOR_PAIR(1)) == COLOR_PAIR(1)) {
+    if (PAIR_NUMBER(curChar & A_COLOR) == 1) {
 			GAME_WON = -1;
 			// player hit a ghost!
 			return false;
 		}
 		
 		// points
-		if(curChar != ' ' && !(curChar & COLOR_PAIR(2))) {
+		if(curChar != ' ' && PAIR_NUMBER(curChar & A_COLOR) != 2) {
 			points++;
 		}
 		// move
@@ -90,7 +98,7 @@ bool avatar::moveTo(int a, int b) {
 			GAME_WON = -1; // hit the player, end the game
 		}
 		// check if we are hitting a ghost-- if so, it's an invalid location
-		if( (curChar & COLOR_PAIR(1)) == COLOR_PAIR(1) ) {
+    if (PAIR_NUMBER(curChar & A_COLOR) == 1) {
 			return false;
 		}
 		writeAt(x, y, letterUnder);
@@ -104,45 +112,62 @@ bool avatar::moveTo(int a, int b) {
 	return true;
 
 }
-bool avatar::moveRight() {
-	if(!isValid(x+1, y)) 
-		return false;
+bool avatar::moveRight(int repeats) {
+  for (int i = 0; i < repeats; ++i) {
+	  if(!isValid(x+1, y))
+		  return false;
 	
-	moveTo(x+1, y+0);
+	  moveTo(x+1, y+0);
+	}
 	return true;
 }
 
-bool avatar::moveLeft() {
-	if(!isValid(x-1, y))
-		return false;
+bool avatar::moveLeft(int repeats) {
+	for (int i = 0; i < repeats; ++i) {
+	  if(!isValid(x-1, y))
+		  return false;
 	
-	moveTo(x-1, y);
+	  moveTo(x-1, y);
+	}
 	return true;
 }
 
-bool avatar::moveUp() {
-	if(!isValid(x,y-1)) 
-		return false;
+bool avatar::moveUp(int repeats) {
+	for (int i = 0; i < repeats; ++i) {
+	  if(!isValid(x,y-1)) 
+		  return false;
 	
-	moveTo(x, y-1);
+	  moveTo(x, y-1);
+	}
 	return true;
 }
 
-bool avatar::moveDown() {
-	if(!isValid(x,y+1))
-		return false;
-	moveTo(x, y+1);
+bool avatar::moveDown(int repeats) {
+	for (int i = 0; i < repeats; ++i) {
+	  if(!isValid(x,y+1))
+		  return false;
+	  moveTo(x, y+1);
+	}
 	return true;
 }
 
-bool avatar::parseWordEnd(bool isWord) {
+bool avatar::parseWordEnd(bool isWord, int repeats) {
+  for (int i = 0; i < repeats; ++i) {
+    if (!parseSingleWordEnd(isWord)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool avatar::parseSingleWordEnd(bool isWord) {
 	// Formula: Get next char, is it alphanumeric? If so, loop & break
 	//		on nonalpha-, and viceversa. 
 	// 2nd case: if you are not at the end of a word, loop until you
 	//		reach a space
 	
 	if(charAt(x+1, y) == ' ') {
-		moveRight();
+		moveRight(1);
 	}
 	// store the current character type
 	char curChar = charAt(x, y);
@@ -181,7 +206,16 @@ bool avatar::parseWordEnd(bool isWord) {
 	return true;
 }
 				
-bool avatar::parseWordBackward(bool isWord) {
+bool avatar::parseWordBackward(bool isWord, int repeats) {
+  for (int i = 0; i < repeats; ++i) {
+    if (!parseSingleWordBackward(isWord)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool avatar::parseSingleWordBackward(bool isWord) {
 	// Formula: Get next char, is it alphanumeric? If so, loop & break
 	//		on nonalpha-, and viceversa. 
 	// 2nd case: if you are not at the end of a word, loop until you
@@ -227,7 +261,16 @@ bool avatar::parseWordBackward(bool isWord) {
 	return true;
 }
 
-bool avatar::parseWordForward(bool isWord) {
+bool avatar::parseWordForward(bool isWord, int repeats) {
+  for (int i = 0; i < repeats; ++i) {
+    if (!parseSingleWordForward(isWord)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool avatar::parseSingleWordForward(bool isWord) {
 	char curChar = charAt(x, y); 
 	bool isAlpha = isalnum(curChar);
 	char lastChar= 'X';
@@ -255,10 +298,17 @@ bool avatar::parseWordForward(bool isWord) {
 	return true;
 }
 
-bool avatar::jumpToEnd() {
-  int x = reachability_map.last_reachable_index_on_line(y);
+bool avatar::jumpToEnd(int repeats) {
+  int specified_line = y + (repeats - 1);
+  int target_line = find_reachable_line(specified_line, false);
+  if (target_line == -1) {
+    writeError("Unable to find reachable line backward from ");
+    writeError(std::to_string(specified_line));
+    return false;
+  }
+  int x = reachability_map.last_reachable_index_on_line(target_line);
   if (x != -1) {
-    moveTo(x, y);
+    moveTo(x, target_line);
 	  return true;
   }
   return false;
@@ -278,6 +328,9 @@ bool avatar::percentJump() {
   chtype letter;
   char opposite = 'x'; bool forward = true;
   while (opposite == 'x' && source_x < WIDTH) {
+    if (charAt(source_x, y) > 4000000) {
+      return false; // don't allow walljump for finding opening bracket
+    }
     letter = letterAt(source_x,y);
     if(letter == '(') {
 	    opposite = ')';
@@ -321,7 +374,8 @@ bool avatar::percentJump() {
   return false;
 }
 
-bool avatar::jumpToChar(char targetChar, bool forward, bool includingTarget, bool acrossWalls) {
+bool avatar::jumpToChar(char targetChar, bool forward, bool includingTarget, bool acrossWalls, int repeats) {
+  std::vector<int> target_list;
   int offset = forward ? 1 : -1;
   for(int target_x = x + offset; target_x >= 0 && target_x < WIDTH + 1; target_x += offset) {
     if (!acrossWalls && charAt(target_x, y) > 4000000) {
@@ -329,20 +383,28 @@ bool avatar::jumpToChar(char targetChar, bool forward, bool includingTarget, boo
     }
     chtype letter = letterAt(target_x,y);
     if(letter == targetChar){
+      int real_target = target_x;
       if (!includingTarget) {
-        target_x -= offset;
+        real_target -= offset;
       }
-      return moveTo(target_x,y);
+      target_list.push_back(real_target);
+      --repeats;
+      if (repeats == 0) {
+        for (int tx : target_list) {
+          moveTo(tx,y);
+        }
+        return true;
+      }
     }
   }
   return false;
 }
 
-bool avatar::jumpForward(char targetChar, bool includingTarget, bool acrossWalls) {
-  return jumpToChar(targetChar, true, includingTarget, acrossWalls);
+bool avatar::jumpForward(char targetChar, bool includingTarget, bool acrossWalls, int repeats) {
+  return jumpToChar(targetChar, true, includingTarget, acrossWalls, repeats);
 }
 
-bool avatar::jumpBackward(char targetChar, bool includingTarget, bool acrossWalls) {
-  return jumpToChar(targetChar, false, includingTarget, acrossWalls);
+bool avatar::jumpBackward(char targetChar, bool includingTarget, bool acrossWalls, int repeats) {
+  return jumpToChar(targetChar, false, includingTarget, acrossWalls, repeats);
 }
 

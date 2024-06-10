@@ -45,6 +45,8 @@ extern bool IN_TUTORIAL;
 extern ReachableMap reachability_map;
 class Ghost1;
 extern std::vector<Ghost1> ghosts;
+class avatar;
+extern avatar player;
 extern int LIVES;
 extern const int NUM_OF_LEVELS;
 

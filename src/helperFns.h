@@ -53,6 +53,8 @@ void loseGame();
 
 bool isWall(chtype character);
 // check to see if the player can move there
-bool isValid(int x, int y);
+bool isValid(int x, int y, bool ignoreWalls = false);
+
+int find_reachable_line(int lineNumber, bool searchForwards);
 
 #endif

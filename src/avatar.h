@@ -27,7 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Avatar Class -- can be a ghost or player
 class avatar {
 	public:
-    avatar(int theX, int theY, bool human, char p, int c);
+    avatar(bool human, char p, int c);
+    virtual void spawn(int theX, int theY);
 	protected:
 		chtype letterUnder;
 		int x;
@@ -38,21 +39,24 @@ class avatar {
 		int lives;
 		int color;
 	public:	
-		bool moveTo(int, int); 
+    bool moveTo(int a, int b, bool ignoreWalls = false);
 		//bool moveTo(int, int, bool);
-		bool moveRight();
-		bool moveLeft();
-		bool moveUp();
-		bool moveDown();
-		bool parseWordForward(bool);
-		bool parseWordBackward(bool);
-		bool parseWordEnd(bool);
+		bool moveRight(int repeats);
+		bool moveLeft(int repeats);
+		bool moveUp(int repeats);
+		bool moveDown(int repeats);
+		bool parseWordForward(bool, int repeats);
+    bool parseSingleWordForward(bool isWord);
+		bool parseWordBackward(bool, int repeats);
+    bool parseSingleWordBackward(bool isWord);
+		bool parseWordEnd(bool, int repeats);
+    bool parseSingleWordEnd(bool isWord);
 		bool jumpToBeginning();
-		bool jumpToEnd();
+		bool jumpToEnd(int repeats);
 	  bool percentJump();
-		bool jumpToChar(char, bool, bool, bool);
-		bool jumpForward(char, bool, bool);
-		bool jumpBackward(char, bool, bool);
+		bool jumpToChar(char, bool, bool, bool, int repeats);
+		bool jumpForward(char, bool, bool, int repeats);
+		bool jumpBackward(char, bool, bool, int repeats);
 
 		int getPoints();
 		bool getPlayer();

@@ -183,7 +183,7 @@ determines how quickly a ghost moves. It refers to the time, in
 seconds, the ghost must wait to move. A `sleepTime` of 0.5 means
 the ghost moves 2 times a second. `sleepTime` = 0.33 is 3 moves per second, etc.
 <br>
-The `Ghost1` class also contains a method called <b>`spawnGhost`</b> which
+The `Ghost1` class also overrides <b>`spawn`</b>, which
 creates the ghost at the location based on its initialization parameters.
 The ghost will appear when `READY` (global bool) is true (this means the player
 is ready), and it will call <b>`ghost.think()`</b> one second afterwards.

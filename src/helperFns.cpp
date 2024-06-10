@@ -150,7 +150,7 @@ bool isWall(chtype character) {
 
 
 // check to see if the player can move there
-bool isValid(int x, int y) {
+bool isValid(int x, int y, bool ignoreWalls) {
 	// Within range of board
 	if(y < 0 || x < 0 || x > WIDTH + 1)
 		return false;
@@ -164,9 +164,30 @@ bool isValid(int x, int y) {
 
 
 	// Now see if it's a valid spot
-	if(testPos >= 4000000 || isWall(testPos))
+	if(!ignoreWalls && (testPos >= 4000000 || isWall(testPos)))
 	{
 		return false;
 	}
 	return true;	
 }
+
+int find_reachable_line(int lineNumber, bool searchForwards) {
+  lineNumber = std::max(0, std::min(lineNumber, MAP_END - MAP_BEGIN));
+  int offset_from_start = lineNumber - 1;
+  int real_line_number = MAP_BEGIN + offset_from_start;
+  int x_start_of_line = reachability_map.first_reachable_index_on_line(real_line_number);
+  while(real_line_number >= MAP_BEGIN && real_line_number <= MAP_END && x_start_of_line == -1) {
+    if (searchForwards) {
+	    ++real_line_number;
+	  } else {
+	    --real_line_number;
+	  }
+    x_start_of_line = reachability_map.first_reachable_index_on_line(real_line_number);
+  }
+  if (x_start_of_line != -1) {
+    return real_line_number;
+  } else {
+    return -1;
+  }
+}
+
