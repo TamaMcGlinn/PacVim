@@ -95,22 +95,22 @@ void doKeystroke(avatar& unit, int repeats = 1) {
 		unit.moveRight(repeats);
 	}
 	else if(INPUT == "w") {
-		unit.parseWordForward(true, repeats);
-	}
-	else if(INPUT == "W") {
 		unit.parseWordForward(false, repeats);
 	}
-	else if(INPUT == "b") {
-		unit.parseWordBackward(true, repeats);
+	else if(INPUT == "W") {
+		unit.parseWordForward(true, repeats);
 	}
-	else if(INPUT == "B") {
+	else if(INPUT == "b") {
 		unit.parseWordBackward(false, repeats);
 	}
+	else if(INPUT == "B") {
+		unit.parseWordBackward(true, repeats);
+	}
 	else if(INPUT == "E") {
-		unit.parseWordEnd(false, repeats);
+		unit.parseWordEnd(true, repeats);
 	}
 	else if(INPUT == "e") {
-		unit.parseWordEnd(true, repeats);
+		unit.parseWordEnd(false, repeats);
 	}
 	else if(INPUT == "$") { 
 		unit.jumpToEnd(repeats); 

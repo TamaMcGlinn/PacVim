@@ -45,12 +45,13 @@ class avatar {
 		bool moveLeft(int repeats);
 		bool moveUp(int repeats);
 		bool moveDown(int repeats);
+    bool parse(bool uppercase, int offset, bool stop_at_word_start);
 		bool parseWordForward(bool, int repeats);
-    bool parseSingleWordForward(bool isWord);
+    bool parseSingleWordForward(bool uppercase);
 		bool parseWordBackward(bool, int repeats);
-    bool parseSingleWordBackward(bool isWord);
+    bool parseSingleWordBackward(bool uppercase);
 		bool parseWordEnd(bool, int repeats);
-    bool parseSingleWordEnd(bool isWord);
+    bool parseSingleWordEnd(bool uppercase);
 		bool jumpToBeginning();
 		bool jumpToEnd(int repeats);
 	  bool percentJump();

@@ -1,6 +1,7 @@
 /*
 
 Copyright 2015 Jamal Moon
+Copyright 2024 Tama McGlinn
 
 PacVim is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License (LGPL) as 
@@ -151,151 +152,132 @@ bool avatar::moveDown(int repeats) {
 	return true;
 }
 
-bool avatar::parseWordEnd(bool isWord, int repeats) {
+bool avatar::parseWordEnd(bool uppercase, int repeats) {
   for (int i = 0; i < repeats; ++i) {
-    if (!parseSingleWordEnd(isWord)) {
+    if (!parseSingleWordEnd(uppercase)) {
       return false;
     }
   }
   return true;
 }
 
-bool avatar::parseSingleWordEnd(bool isWord) {
-	// Formula: Get next char, is it alphanumeric? If so, loop & break
-	//		on nonalpha-, and viceversa. 
-	// 2nd case: if you are not at the end of a word, loop until you
-	//		reach a space
-	
-	if(charAt(x+1, y) == ' ') {
-		moveRight(1);
-	}
-	// store the current character type
-	char curChar = charAt(x, y);
-	bool isAlpha = isalnum(curChar);
-	char nextChar = charAt(x+1,y);
-
-	while(nextChar == ' ') {
-		if(!moveTo(x+1, y))
-			return false;
-		nextChar = charAt(x+1, y);
-		curChar = charAt(x, y);
-		isAlpha = isalnum(curChar);
-	}
-	// breakOnSpace = true if the current character isn't the end of a word
-	bool breakOnSpace = (nextChar != ' ' && curChar != ' ');
-	bool breakOnAlpha = !isalnum(nextChar) && nextChar != ' ';
-	while(true) { // no definite loop #; break when we reach conditions
-		if((!breakOnAlpha == !isalnum(nextChar))  && isWord) {
-			break;
-		}
-		else if(breakOnSpace && (nextChar == ' ')) {
-			break; 
-		}
-		else if(nextChar == '#') { // not allowed to go on # so break
-			break;
-		}
-		else { // iterate
-			if(!moveTo(x+1, y))
-				return false;
-			if(nextChar != ' ')
-				breakOnSpace = true;
-			nextChar = charAt(x+1, y);
-			curChar = charAt(x, y);
-		}
-	}
-	return true;
+bool avatar::parseSingleWordEnd(bool uppercase) {
+  return parse(uppercase, 1, false);
 }
 				
-bool avatar::parseWordBackward(bool isWord, int repeats) {
+bool avatar::parseWordBackward(bool uppercase, int repeats) {
   for (int i = 0; i < repeats; ++i) {
-    if (!parseSingleWordBackward(isWord)) {
+    if (!parseSingleWordBackward(uppercase)) {
       return false;
     }
   }
   return true;
 }
 
-bool avatar::parseSingleWordBackward(bool isWord) {
-	// Formula: Get next char, is it alphanumeric? If so, loop & break
-	//		on nonalpha-, and viceversa. 
-	// 2nd case: if you are not at the end of a word, loop until you
-	//		reach a space
-
-	// store the current character type
+// for b, e, B, E parsing,
+// and for w and W parsing, signified by stop_at_word_start == true
+// 1. If this or next char is a space,
+//    move past all the spaces and start from first non-space
+// 2. If step 1 didn't move us, and
+//    uppercase == false, and
+//    the next character's alphanumericity is different,
+//      move one character over.
+// 3. If we have moved, and stop_at_word_start == true, terminate here and return true.
+// 4. Now keep moving until either:
+//    - the next char will be a space, or
+//    - uppercase == false and
+//      the next char's alphanumericity differs from that of the current character
+// 5. If stop_at_word_start,
+//    - move one character over, and then
+//    - if this character is a space, move to the first non-space
+// 6. Assert that we've moved at least one space
+bool avatar::parse(bool uppercase, int offset, bool stop_at_word_start) {
+  bool moved = false;
 	char curChar = charAt(x, y); 
-	bool isAlpha = isalnum(curChar);
-	char nextChar = charAt(x-1, y); 
+	char nextChar = charAt(x+offset, y);
+  auto move_over = [&]() {
+    moved = true;
+    if (!moveTo(x+offset, y)) {
+      return false;
+    }
+	  curChar = charAt(x, y); 
+	  nextChar = charAt(x+offset, y);
+	  return true;
+	};
+	// to ensure we always return when moveTo returns false
+	#define MOVE if (!move_over()) { return false; }
 
-	// breakOnSpace = true if the current character isn't the end of a word
-	bool breakOnSpace = (nextChar != ' ' && curChar != ' ');
-	bool breakOnAlpha = breakOnSpace && (!isAlpha && !isalnum(nextChar) && isWord); 
-	bool breakOnNonAlpha = breakOnSpace && ((isAlpha && isalnum(nextChar))
-	 		|| (!isAlpha && isalnum(nextChar)))&& isWord;
+  // 1. If this or next char is a space,
+  //    move past all the spaces and start from first non-space
+	if (curChar == ' ' || nextChar == ' ') {
+	  MOVE;
+	  while(curChar == ' ') {
+	    MOVE;
+	  }
+  }
 
+  assert(curChar != ' ' && "curChar still a space after moving past spaces");
 
-	while(true) { // no definite loop #; break when we reach conditions
-		if(curChar != ' ' && ((isalnum(nextChar) && breakOnAlpha) || (!isalnum(nextChar) && breakOnNonAlpha))) {
-			break;
-		}
-		else if(breakOnSpace && nextChar == ' ') {
-			break; 
-		}
-		else if(nextChar == '#') { // not allowed to go on # so break
-			return false;
-		}
-		else { // iterate
+  // 2. If step 1 didn't move us, and
+  //    uppercase == false, and
+  //    the next character's alphanumericity is different,
+  if (!moved && uppercase == false && (isalnum(curChar) != isalnum(nextChar))) {
+    //      move one character over.
+    MOVE;
+  }
 
-			if(!moveTo(x-1, y))
-				return false;
-			if(nextChar != ' ' && !breakOnSpace) {
-				if(isWord) {	
-					breakOnAlpha = !isalnum(nextChar);
-					breakOnNonAlpha = isalnum(nextChar);
-				}
-				breakOnSpace = true;
-			}
-			nextChar = charAt(x-1, y); 
-			curChar = charAt(x, y);
-		}
-	}
-	return true;
+  // 3. If we have moved, and stop_at_word_start == true, terminate here and return true.
+  if (moved && stop_at_word_start) {
+    return true;
+  }
+
+  // 4. Now keep moving until either:
+  //    - the next char will be a space, or
+  //    - uppercase == false and
+  //      the next char's alphanumericity differs from that of the current character
+  while(true) {
+    if (nextChar == ' ') {
+      break;
+    }
+    if (uppercase == false && (isalnum(curChar) != isalnum(nextChar))) {
+      break;
+    }
+    MOVE;
+  }
+
+  // 5. If stop_at_word_start,
+  if (stop_at_word_start) {
+    //    - move one character over, and then
+    MOVE;
+    //    - if this character is a space, move to the first non-space
+	  while(curChar == ' ') {
+	    MOVE;
+	  }
+  }
+
+	#undef MOVE
+
+  // 6. Assert that we've moved at least one space
+  assert(moved && "parse did not move us");
+
+  return true;
 }
 
-bool avatar::parseWordForward(bool isWord, int repeats) {
+bool avatar::parseSingleWordBackward(bool uppercase) {
+  return parse(uppercase, -1, false);
+}
+
+bool avatar::parseWordForward(bool uppercase, int repeats) {
   for (int i = 0; i < repeats; ++i) {
-    if (!parseSingleWordForward(isWord)) {
+    if (!parseSingleWordForward(uppercase)) {
       return false;
     }
   }
   return true;
 }
 
-bool avatar::parseSingleWordForward(bool isWord) {
-	char curChar = charAt(x, y); 
-	bool isAlpha = isalnum(curChar);
-	char lastChar= 'X';
-
-	bool breakOnAlpha = !isalnum(curChar);
-	
-	while(true) {
-		if(curChar != ' ' && (!isalnum(curChar) == !breakOnAlpha) && isWord ) { // if they are the same
-			break;
-		}
-		else if(lastChar == ' ' && curChar != ' ') {
-			break;
-		}
-		else if(lastChar == '#' || curChar == '#') {
-			moveTo(x-1, y);
-			return false;
-		}
-		else {
-			lastChar = curChar;
-			if(!moveTo(x+1,y))
-				return false;
-			curChar = charAt(x,y);
-		}
-	}
-	return true;
+bool avatar::parseSingleWordForward(bool uppercase) {
+  return parse(uppercase, 1, true);
 }
 
 bool avatar::jumpToEnd(int repeats) {
