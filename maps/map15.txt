@@ -3,27 +3,27 @@
 # |              | # ~Men have~emptied entire~clips at them and hit nothin~
 # | Follow the   | # Yet their~strength and their speed are still~based~##
 # | white rabbit   # ~that is~built on rules.############ in a wor#d~##~#
-# | . * < % * &  | #Because of~that,~#########~~~~~~~~~~~~~~~~~~###~?<~T~#
-# | $ - ( . ! .  | # they will~never~ # be as strong or as fast~# M~>~ r~#
-# | @ ! @ \ $ ~  | # It's the~questi#n#that drives us.  # #### ~# o.~\~i~#
-# | & ~ ^ & ~    | # It's the~quest#on#that brought you#here #a~# r~%~_n~#
+# | . * < % * &  | #Because of~that,~#########~~~~~~~~~~~~~~~~~~###~..~T~#
+# | $ - ( . ! .  | # they will~never~ # be as strong or as fast~# M~.~.r~#
+# | @ ! @ \ $ ~  | # It's the~questi#n#that drives us.  # #### ~# o...~i~#
+# | & ~ ^ & ~    | # It's the~quest#on#that brought you#here #a~# r~.~.n~#
 # | ~   . ,      | #################  ###################### #s~# p.~.~i~#
-# |     > ~      | # One of these # The Matrix~is a system.  # ~# h~$~-t~#
-# |     ~        | # lives~has a  # That system~is our enemy.#y~# e.~@~y~#
-# |              | # ) future, and one of them~does not.    ~#o~# u~$~?.~#
-###################~##########################################u~~ s.~\~[~#
+# |     > ~      | # One of these # The Matrix~is a system.  # ~# h~.~.t~#
+# |     ~        | # lives~has a  # That system~is our enemy.#y~# e.~.~y~#
+# |              | # ) future, and one of them~does not.    ~#o~# u~.~..~#
+###################~##########################################u~~ s.~.~[~#
 #~    Why,~oh~why~didn't~I~take the blue pill?~A little pi~ce   ~~~~~~~~~#####
-#~The Matrix is everywhere. It is all~around us,  of advic~You see an agent,y#
-#~even now in~this~very room. You can~see it when you look~out your window~#o#
-#~or~when you~turn on~your television. ~~~~~~~~~~~~~~~~~~~~   ~~~~~~~~~~~~##u#
-#~you~are a~slave, Neo. Like everyone~else you were born into bondage, ~ ~#do###
-#~born~into~a prison~that you cannot ~smell or taste or touch.~~~~~~~~~~ ~#what#
+#~The Matrix is everywhere. It is all~around us,  of advic~You see an agent,y~
+#~even now in~this~very room. You can~see it when you look~out your window~#o~
+#~or~when you~turn on~your television. ~~~~~~~~~~~~~~~~~~~~   ~~~~~~~~~~~~##u~
+#~you~are a~slave, Neo. Like everyone~else you were born into bondage, ~ ~#do~##
+#~born~into~a prison~that you cannot ~smell or taste or touch.~~~~~~~~~~ ~#what~
 #~           ~A prison for your mind   ~~~~~~~~~~~~~~~~~~~~~~~...........~#we~##
 ########################################~ I believe I can bring him back~##do~#
 #~~~~No?~~~~#~I'm going with you.~~~~~~~~~~~~~~~~No you're not~~~~~~~~~~~#gg~##
 #~Let me tell~you what~I believe.~I believe Morpheus means more to me~########
-#~than he does to you.~I believe if you're really serious about saving him,#
-#~you are going to need~my help. And since I am the ranking officer on  ####
+#~than he does to you.~I believe if you're really serious about saving him~#
+#~you are going to need~my help. And since I am the ranking officer on#~####
 #~this ship, if you don't like it,~I believe you can go to hell.~########
 #~Because you aren't going anywhere else.############## ~~~~~~~~~#]~#
 #######################################~  ~Tank? Load us up.~~~~~~.~#
@@ -37,16 +37,13 @@ s.4 10 6
 s.8 23 6
 s.45 24 6
 s.38 65 7
-s.35 72 7
 s.52 72 8
-s.36 65 8
-s.2 70 8
-s.38 72 9
+s.45 70 8
+s.48 72 9
 s.44 72 10
-s.22 70 10
-s.3 65 10
+s.4 65 10
 s.43 26 11
-s.25 65 12
+s.35 65 12
 s.55 36 15
 s.72 24 16
 s.8 2 20
