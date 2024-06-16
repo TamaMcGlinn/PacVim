@@ -195,7 +195,7 @@ void Ghost1::smith_think() {
   std::stringstream ss;
   if (distance < 4.1 and distance >= 0.1) {
     species = Ghost_Species::Seeker;
-    moveTo(x, y, true);
+    spawn(x, y);
   }
 }
 
