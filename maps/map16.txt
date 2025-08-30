@@ -1,0 +1,48 @@
+################################################################################################
+# our~thankfulness~ ~    at the esc#~We~are~told~that~Herr~Hitler~has~a~plan~ % %~~~~~~        #
+#~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ #of our men##for~invading~the~British~Isles. ~ ~ ~ ~ ~## #~~~~~~~       #
+#~must~not~blind~us~ to#the fact ##~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~  ~  ##~~~~~~~~      #
+#~what~has~happened~in (France&###~Turning~once~again~to~the~question~of~ #     ###~~~~~~      #
+#Belgium{~is~a~colossal ~#     # ~invasion,~I~would~observe~that~there~has      #~~~~~~~~      #
+#military~disaster ~ ~ ~ ~#    # ###~never~been~a~period~in~all~these~long     #~~~~~    ~     #
+# ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~#       #  ~centuries~when~an~absolute~guarantee    #~~~~    ~~     #
+#  ~ ~ ~ ~ ~ ~ ~   ~ ~ ~ ~           #~against~invasion~could~be~given~to~    ~###~~~   ~~~~~~~#
+# ~ ~ ~ ~ ~ ~         ~~~ #    ~     # our~people.~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~    ~~~~~~~~~~~~~~~~#
+#  ~ ~ ~ ~ ~           ~~~~~~~~we shall~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~     ~~~~~~~~~~~~~~~~#
+# ~ ~ ~ ~ ~ ~           ~~~ ~~~ ~prove####~it~is~that~chance~which~has~exc~ ited  ~~~~~~~~   ~~#
+#  ~ ~ ~  use f   and  ~ ~ ~ ~ ~~ourselves#and~befooled~the~imaginations~of~ many ~~~~      ~~~#
+# ~ ~ ~ ~   then      ~ ~ ~ ~ ~ ~#able to ##~Continental~~____|~tyrants.~~  #                 ~#
+#  ~ ~ ~     ;  /  ,   ~ ~ ~ ~ ~ defend our  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~   ~                     #
+# ~ ~ ~ ~             ~ ~ ~ Island home, to## ~ ~ ~ ~ ~ ~ ~ ~ ~           #                    #
+#  ~ ~ ~ ~ use $  but  ~ ~ ~ #ride out the #~  ~ ~ ~ ~ ~ ~ ~  ~~#                              #
+#~~ ~ ~ ~~  careful   ~ ~ ~ ##storm of war.......#~ ~ ~ ~ ~   ~      we see the originality    #
+#~ ~ ~ ~  with 0    ~~ ~ ~ ~# if necessary for ### ~ ~ ~ ~ ~           of malice, the ingenuity#
+# ~ ~ ~         ~ ~ ~ ~ ~ ####yrs, if necessary#~ ~ ~ ~ ~       of aggression, and every kind  #
+#  ~ ~ ~    ~ ~ ~ ~ ~ ~ ~ ~ ~###    ALONE.   # ~ ~ ~ ~ ~             of~brutal~and~treacherous #
+# ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~#June 4 1940#### ~ ~ ~#                      maneuver         #
+#  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ #######   #######  # ~ ~# we s}hall not flag or fail                #
+# ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~#   #~~   ~ ~ ~ ~ ~ ~   We shall go on to the end,                  #
+#  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ####### ~ ~ ~ ~ ~ ~ ~ ~   we shall fight in France, ~                 #
+# ~ ~ ~____|~we~shall~fight~them~on~the~seas~ ~                                                #
+#and~oceans,~we~shall~fight~~~with~ growing~  confidence and growing strength #      ######### #
+# ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~    ~~~                                  #      #         #
+#~ ~ ~ ~ ~ ~ ~ ____| ~ ~ ~ ~ ~ ~ ~ ~ ~# We have our duty to our Ally.         #      #         #
+# ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~   ~ ~                                         ################ #
+#  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~                   )                                     #       # #
+# ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~  # we shall fight on the beaches, we shall fight         #       # #
+#  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~#in the landing~grounds, we shall fight in    ########       # #
+# ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~#the fields and in the streets; we shall never surrender    #
+################################################################################################
+a.25 81 27
+c.25 81 30
+a.25 89 31
+a.25 89 28
+/.9 45 31
+/.9 55 27
+/.8 81 16
+/.3 80 7
+/.4 86 27
+/.5 16 28
+/.5 9 25
+/.5 60 13
+/.3 88 31
